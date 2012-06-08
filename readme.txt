@@ -15,7 +15,7 @@ This plugin will create WordPress posts for podcasting with PowerPress using inf
 This will create posts for podcasting with BluBrry PowerPress using data from a MySQL table. Information required from the database:
 Host, Database Name, Database Table Name, Database Username and Database Password.
 Also field names from the database which will be used for the following:
-Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media size, Media type and the date you wish to show posted.
+Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media size, Media type and Date posted.
 
 
 
