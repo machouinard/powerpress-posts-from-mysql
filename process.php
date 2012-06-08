@@ -70,7 +70,7 @@ while($row = $STH->fetch()){
     // then use post id to handle image
     if($post_id = wp_insert_post($post)){
         
-            $image_url = $row[$IMAGE_FIELD];
+         $image_url = $row[$IMAGE_FIELD];
          if($image_url !== NULL){
             $upload_dir = wp_upload_dir();
             $image_data = file_get_contents($image_url);
