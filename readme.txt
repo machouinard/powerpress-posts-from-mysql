@@ -1,6 +1,6 @@
-=== powerpress-posts-from-mysql ===
+=== PowerPress Posts From MySQL ===
 Contributors: machouinard
-Donate link: http://markchouinard.me
+Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 2.0.2
 Tested up to: 3.3.2
@@ -12,7 +12,12 @@ This plugin will create WordPress posts for podcasting with PowerPress using inf
 
 == Description ==
 
-I'll update this soon with specifics, but the settings page shows all the database fields needed for this to work.
+This will create posts for podcasting with BluBrry PowerPress using data from a MySQL table. Information required from the database:
+Host, Database Name, Database Table Name, Database Username and Database Password.
+Also field names from the database which will be used for the following:
+Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media size, Media type and the date you wish to show posted.
+
+
 
 == Installation ==
 
