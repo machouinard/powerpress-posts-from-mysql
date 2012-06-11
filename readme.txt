@@ -12,7 +12,7 @@ This plugin will create WordPress posts for podcasting with PowerPress using inf
 
 == Description ==
 
-This will create posts for podcasting with BluBrry PowerPress using data from a MySQL table. Information required from the database:
+Information required from the database:
 Host, Database Name, Database Table Name, Database Username and Database Password.
 Also field names from the database which will be used for the following:
 Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media size, Media type and Date posted.
@@ -23,26 +23,25 @@ Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media si
 
 This section describes how to install the plugin and get it working.
 
-e.g.
 
-1. Upload the folder containing pfd.php and process.php to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
+1. Upload the folder containing `pfd.php` and `process.php` to the `/wp-content/plugins/` directory
+2. Activate the plugin through the `Plugins` menu in WordPress
+3. Configure your database settings in `Post From MySQL` under the `Tools` menu in the Dashboard
 
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= I think something's not right.  Can you fix it? =
 
-An answer to that question.
+I'll do my best.  Post a message at <http://plugins.markchouinard.me/powerpress-plugin/> explaining what's up and I'll get to work making it right.
 
-= What about foo bar? =
+= Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
-Answer to foo bar dilemma.
+I don't believe so, but I honestly haven't tested that.  Yet.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the directory of the stable readme.txt, so in this case, `/tags/4.3/screenshot-1.png` (or jpg, jpeg, gif)
+1. Settings Page from Post From MySQL in the Tools Menu
 2. This is the second screen shot
 
 == Changelog ==
