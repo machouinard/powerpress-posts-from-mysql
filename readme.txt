@@ -2,7 +2,7 @@
 Contributors: machouinard
 Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
-Requires at least: 2.0.2
+Requires at least: 3.0
 Tested up to: 3.3.2
 Stable tag: trunk
 License: GPLv2 or later
