@@ -22,11 +22,12 @@ Title, Category, Post Body, Featured Image(URL to an image), Media URL, Media si
 == Installation ==
 
 This section describes how to install the plugin and get it working.
-
+(make sure you have created the category in your blog before running or all the podcasts will be uncategorized)
 
 1. Upload the folder containing `pfd.php` and `process.php` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the `Plugins` menu in WordPress
-3. Configure your database settings in `Post From MySQL` under the `Tools` menu in the Dashboard
+3. Configure your database settings in `Post From MySQL` under the `Tools` menu in the Dashboard and click `Save Changes`
+4. After you've saved your settings, click `Process` and sit tight.
 
 
 == Frequently Asked Questions ==
