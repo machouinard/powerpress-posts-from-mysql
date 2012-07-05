@@ -42,12 +42,15 @@ I don't believe so, but I honestly haven't tested that.  Yet.
 
 == Screenshots ==
 
-1. Settings Page from Post From MySQL in the Tools Menu
-2. This is the second screen shot
+1. Post From MySQL Settings Page in the Tools Menu
+2. Once the database values are entered you will be shown the total number of records the specified table holds.
+3. If any of the values are incorrect you will be notified that there is no database connectivity.  Please check your settings and re-enter.
+4. As of this version, you can supply a database field value to use if you would like to only create a range of podcasts from your table.  If either the Start Record or End Record fields are left blank they will default to the first and last record, respectively.
+5. After clicking process, you will be shown the number of podcasts posted.
 
 == Changelog ==
 
-
+v 0.9.1     Added database connectivity checking.
 
 == Arbitrary section ==
 
