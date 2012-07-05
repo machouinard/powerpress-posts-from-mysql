@@ -4,8 +4,8 @@ Plugin Name: PowerPress Post From MySQL
 Plugin URI: http://plugins.markchouinard.me/powerpress-plugin/
 Description: Create PowerPress Posts From MySQL Database Table
 Author: Mark Chouinard
-Author URI: http://markchouinard.me/
-Version: 0.9
+Author URI: http://plugins.markchouinard.me/powerpress-plugin/
+Version: 0.9.1
 License: GPL version 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 */
 
@@ -102,15 +102,16 @@ function mac_pfd_settings_page(){
 ?>
 
 <div class="wrap">
-    <h2>PowerPress Post From MySQL Settings</h2>
-    <h3>Database table and field names.</h3>
+    <h1>PowerPress Post From MySQL Settings</h1>
+    <h2>Database table and field names.</h2>
+    <h3>This is the database where your podcast info is stored<br />It could be different than your WordPress database.</h3>
 <form name="form1" method="post" action="">
     <input type="hidden" name="<?php echo $hidden_pfd_fn; ?>" value="Y">
     
 
     <p>Database Host
     <input type="text" name=<?php echo $mac_pfd_db_host_pfd_fn; ?> value="<?php echo $mac_pfd_db_host; ?>" size="25"</p>
-    <p>Database Name<br />(not WP database)
+    <p>Database Name
     <input type="text" name=<?php echo $mac_pfd_db_name_pfd_fn; ?> value="<?php echo $mac_pfd_db_name; ?>" size="25"</p>
     <p>Database Username
     <input type="text" name=<?php echo $mac_pfd_db_username_pfd_fn; ?> value="<?php echo $mac_pfd_db_username; ?>" size="25"</p>
@@ -142,9 +143,57 @@ function mac_pfd_settings_page(){
     <p class="submit">
         <input type="submit" name="Submit" class="button-primary" value="Save Changes" />
     </p>
-    <p class="submit">
-        <input type="submit" name="process" class="button-secondary" value="Process" />
-    </p>
+    
+    
+    <?php
+    // The below code checks database connectivity and allows the selection of a range of records
+    // to be posted.  If either Start Record or End Record fields are left blank they will default to
+    // either the first or last record, respectively.
+    // 
+    // Connect to database - I wrote this to work with MySQL 
+    $DB_HOST = get_option($mac_pfd_db_host_pfd_fn);
+    if(!empty($DB_HOST)){
+        $DB_NAME = get_option($mac_pfd_db_name_pfd_fn);
+        $DB_USER = get_option($mac_pfd_db_username_pfd_fn);
+        $DB_PASS = get_option($mac_pfd_db_password_pfd_fn);
+        $DB_TABLE = get_option($mac_pfd_db_table_pfd_fn);
+
+        try{
+            $DBH = new PDO("mysql:host=$DB_HOST;dbname=$DB_NAME", $DB_USER, $DB_PASS);
+            }
+            catch (PDOException $e){
+            }
+if($DBH){
+        $DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
+        $STH = $DBH->query("SELECT count(*) FROM ".$DB_TABLE);
+        $count = $STH->fetchColumn();
+        echo "<h2>There are {$count} records available.</h2>\r\n<br />";
+        if($count > 0):
+            ?>
+            <label for="range_field">Name of field for range</label>
+            <input type="text" name="range_field" size="23" value="id"><br />
+            <label for="start">Start Record</label>
+            <input type="text" name="start" size="8">
+            <label for="end">End Record</label>
+            <input type="text" name="end" size="8">
+            <input type="hidden" name="max" value="<?php echo $count; ?>">
+            <p class="submit">
+                <input type="submit" name="process" class="button-secondary" value="Process" />
+            </p>
+            <?php
+        endif;
+}else{
+    echo "<h2>No Database Connection</h2>";
+    echo "<h3>Please check your settings</h3>";
+}
+    }else{
+        echo "<h2>Please enter your database details</h2>";
+    }
+    ?>
+    
+    
+
 
     
 </form>
