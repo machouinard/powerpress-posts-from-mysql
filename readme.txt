@@ -51,6 +51,9 @@ I don't believe so, but I honestly haven't tested that.  Yet.
 == Changelog ==
 
 v 0.9.1     Added database connectivity checking.
+            Added check to prevent posting same podcast twice based on the podcast/post title.
+            Added ability to post from a range of records in the table based on a specific database field.
+            Added display of total records in table.
 
 == Arbitrary section ==
 
