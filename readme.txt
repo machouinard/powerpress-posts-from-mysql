@@ -4,7 +4,7 @@ Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
 Tested up to: 3.4.1
-Stable tag: 0.9.2
+Stable tag: 0.9.2a
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,7 +68,6 @@ Again, post a message at <http://plugins.markchouinard.me/powerpress-plugin/> ex
 
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
-I don't believe so, but I honestly haven't tested that.  Yet.
 
 == Screenshots ==
 
