@@ -3,8 +3,8 @@ Contributors: machouinard
 Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
-Tested up to: 3.4.1
-Stable tag: 0.9.2a
+Tested up to: 3.4.2
+Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,9 +41,9 @@ Also field names from the database which will be used for the following:
 This section describes how to install the plugin and get it working.
 (make sure you have created the category in your blog before running or all the podcasts will be uncategorized)
 
-1. Upload the folder containing `pfd.php` and `process.php` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the `Plugins` menu in WordPress
-3. Configure your database settings in `Post From MySQL` under the `Tools` menu in the Dashboard and click `Save Changes`
+1. Upload the folder containing pfd.php and process.php to the /wp-content/plugins/ directory
+2. Activate the plugin through the Plugins menu in WordPress
+3. Configure your database settings in Post From MySQL under the Tools menu in the Dashboard and click Save Changes
 4. After you've saved your settings and a connection is made, the total number of records will be displayed.
 
 <strong>NOTE! For this plugin to work correctly, it requires a field to refer to records by. * see <em>[How should I set up the database table](http://wordpress.org/extend/plugins/powerpress-posts-from-mysql/faq/ "Frequently Asked Questions")?</em>in the FAQ for more information.  The approach I've found best is to ensure all records are inserted into the table using an auto-incremented primary key such as <em>id</em>.</strong> 
@@ -58,6 +58,11 @@ This section describes how to install the plugin and get it working.
 * Populate the table with the podcast data using any method you feel comfortable.
 * In my case the podcasts themselves were numbered from 1 to 465.  I wrote a PHP script to insert a new record for each podcast into the table.  I also included an 'id' field which I set as primary and auto-increment so after all the podcasts were entered into the table, both 'id' and 'number' fields ranged from 1 to 465. This may seem redundant, but I included the 'id' field to ensure continuity in case the podcast numbers became non-sequential at some point in the future.  As long as all records have an auto-incremented id field starting at 1 you should be able to run the plugin on multiple occasions adding only records that have been inserted since the previous run. And having a primary auto-incremented field is pretty standard to begin with, no?
 
+= Can I help you translate this plugin? =
+
+Sure! I've created a few using Google translate, but I'm not sure how accurate they are. 
+The POT file is included in the plugin's languages directory. Feel free to use that and email me the .po file or contact me to discuss further 
+
 = I think something's not right.  Can you fix it? =
 
 I'll do my best.  Post a message at <http://plugins.markchouinard.me/powerpress-plugin/> explaining what's up and I'll get to work making it right.
@@ -68,6 +73,7 @@ Again, post a message at <http://plugins.markchouinard.me/powerpress-plugin/> ex
 
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
+I don't believe so, but I honestly haven't tested that.  Yet.
 
 == Screenshots ==
 
@@ -82,6 +88,20 @@ The range used to select the records is also displayed.
 8. The 21 records previously published (340 - 360) have been skipped while the 15 new records (325 - 339) have been succesfully posted.
 
 == Changelog ==
+v 0.9.4
+
+* Added check to ensure BluBrry PowerPress is installed and activated
+* More CSS and HTML changes in an attempt to pretty this thing up a bit
+* Added a link to the settings page from installed plugins page
+* Changed code to allow for localization
+* Used Google Translate to create .mo files for:
+* French
+* Spanish - Spain/Ecuador
+* Italian
+* Danish - Denmark
+* German
+* Turkish
+
 v 0.9.2
 
 * Included a Primary Key field in the settings page
@@ -96,11 +116,19 @@ v 0.9.1
 * Added ability to post from a range of records in the table based on a specific database field.
 * Added display of total records in table.
 
-== Arbitrary section ==
+== Checking For Duplicate Titles ==
 
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
+The idea of using GUIDs to check for duplicate podcasts was brought to my attention recently.
+I haven't had a chance to investigate that yet, but if anyone has any suggestions about that please [let me know](http://plugins.markchouinard.me/contact/ "Contact").
+
+
+
+
+
+
+
+
+
 
 == A brief Markdown Example ==
 
