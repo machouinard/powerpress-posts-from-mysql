@@ -1,19 +1,27 @@
 <?php
-if(!empty($_POST['range_field'])){
-    $range_field = $_POST['range_field'];
+
+
+if(isset($_POST['status'])){
+    $status = $_POST['status'];
 }else{
-    $range_field = 'id';
+    $status = 'publish';
+}
+
+if(!empty($_POST['sort_field'])){
+    $sort_field = $_POST['sort_field'];
+}else{
+    $sort_field = 'id';
 }
 if(!empty($_POST['start'])){
-    $start = $_POST['start'] - 1;
+    $start = $_POST['start'];
 }else{
-    $start = 0;
+    $start = 1;
 }
 
 if(!empty($_POST['end'])){
-    $end = $_POST['end'] + 1;
+    $end = $_POST['end'];
 }else{
-    $end = $_POST['max'] + 1;
+    $end = $_POST['max'];
 }
 
 if($start > $_POST['max']){
@@ -21,68 +29,40 @@ if($start > $_POST['max']){
 }
 
 if($end > $_POST['max']){
-    $end = $_POST['max'] + 1;
+    $end = $_POST['max'];
 }
 
-$range = " WHERE {$range_field} > {$start} && {$range_field} < {$end}";
+$range = " WHERE {$sort_field} >= {$start} && {$sort_field} <= {$end}";
 
-
-
-    $DB_HOST = get_option($mac_pfd_db_host_pfd_fn);
-    $DB_NAME = get_option($mac_pfd_db_name_pfd_fn);
-    $DB_USER = get_option($mac_pfd_db_username_pfd_fn);
-    $DB_PASS = get_option($mac_pfd_db_password_pfd_fn);
-    $DB_TABLE = get_option($mac_pfd_db_table_pfd_fn);
-    $TITLE_FIELD = get_option($mac_pfd_db_title_field_fn);
-    $BODY_FIELD = get_option($mac_pfd_db_body_field_fn);
-    $IMAGE_FIELD = get_option($mac_pfd_db_image_field_fn);
-    $URL_FIELD = get_option($mac_pfd_db_url_field_fn);
-    $DATE_FIELD = get_option($mac_pfd_db_date_field_fn);
-    $CATEGORY_FIELD = get_option($mac_pfd_db_category_field_fn);
-    $SIZE_FIELD = get_option($mac_pfd_db_size_field_fn);
-    $TYPE_FIELD = get_option($mac_pfd_db_type_field_fn);
-
-// Connect to database - I wrote this to work with MySQL    
-try{
-$DBH = new PDO("mysql:host=$DB_HOST;dbname=$DB_NAME", $DB_USER, $DB_PASS);
-}
- catch (PDOException $e){
-}
-
-$DBH->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-
-// Selects all rows from the specified table holding the podcast information
-$STH = $DBH->query("SELECT * FROM ".$DB_TABLE.$range);
+// Connect to database    
+$DBH = connect::get_instance();
+// Selects rows from the specified table based on Start and End Record inputs
+$STH = $DBH->query("SELECT * FROM ".$mac_pfd_db_table.$range);
 $STH->setFetchMode(PDO::FETCH_ASSOC);
-
 
 $processed = 0; // 
 $skipped = 0; // 
 
 while($row = $STH->fetch()){
-
-    $title = html_entity_decode($row[$TITLE_FIELD]);
-    $body = html_entity_decode($row[$BODY_FIELD]);
-    $post_date = $row[$DATE_FIELD]." 17:51:00";
+    $raw_title = $row[$mac_pfd_db_title_field];
+    $title = esc_html($raw_title);
+    $body = esc_html($row[$mac_pfd_db_body_field]);
+    $post_date = $row[$mac_pfd_db_date_field]." 17:51:00";
     
 
     // Check for duplicate
-    if(!get_page_by_title($title, 'OBJECT', 'post')){
+    if(!get_page_by_title($raw_title, 'OBJECT', 'post')){
     //
 
-        $category = $row[$CATEGORY_FIELD];
+        $category = $row[$mac_pfd_db_category_field];
         $cat_id = get_cat_ID($category);
 
-        // split name into keywords - this is temporary - may not be useful or need to be changed
-        preg_match('~\d{2,3}:\s(.*)~', $title, $matches);
-        $keywords = preg_replace('~\s~', ', ', $matches[1]);
-
         // Set up the value for the custom field 'enclosure' for PowerPress
-        $enclosure_value = $row[$URL_FIELD];
+        $enclosure_value = $row[$mac_pfd_db_url_field];
         $enclosure_value .= "\n";
-        $enclosure_value .= $row[$SIZE_FIELD];
+        $enclosure_value .= $row[$mac_pfd_db_size_field];
         $enclosure_value .= "\n";
-        $enclosure_value .= $row[$TYPE_FIELD];
+        $enclosure_value .= $row[$mac_pfd_db_type_field];
 
         // Set up the Post
         $post = array(
@@ -91,14 +71,14 @@ while($row = $STH->fetch()){
             'post_date' => $post_date,
             'post_title' => $title,
             'post_type' => 'post',
-            'post_status' => 'publish',
+            'post_status' => $status,
         );
 
         // If the Post is successfully inserted the new Post_id will be returned
         // then use post id to handle image
         if($post_id = wp_insert_post($post)){
 
-            $image_url = $row[$IMAGE_FIELD];
+            $image_url = $row[$mac_pfd_db_image_field];
             if($image_url !== NULL){
                 $upload_dir = wp_upload_dir();
                 $image_data = file_get_contents($image_url);
@@ -131,4 +111,22 @@ while($row = $STH->fetch()){
       $skipped++;
   }
 }
-echo '<div class="updated"><p><strong>'.$processed.' podcasts posted.  '.$skipped.' skipped as duplicate.</strong></p></div>';
+echo '<div class="updated">';
+
+if($start > $end){
+    echo '<h3>';
+    echo __('Please verify your Start and End Record range', 'powerpress-posts-from-mysql');
+    echo ':&nbsp;'.$sort_field."'s&nbsp;".($start).'&nbsp;-&nbsp;'.($end);
+    echo '</h3>';
+}else{
+    echo '<strong><p>';
+    printf(_n('%d podcast posted.', '%d podcasts posted.', $processed, 'powerpress-posts-from-mysql'), $processed);
+    echo '</p><p>';
+    printf(_n('%d podcast skipped as duplicate.', '%d podcasts skipped as duplicates.', $skipped, 'powerpress-posts-from-mysql'), $skipped);
+    echo '</strong></p><p>';
+    printf(__('Podcast %s numbers: %d through %d', 'powerpress-posts-from-mysql'), $sort_field, $start, $end);
+    echo '</p><p>';
+    printf(__('Status: %s', 'powerpress-posts-from-mysql'), $status);
+    echo '</p>';
+}
+echo '</div>';

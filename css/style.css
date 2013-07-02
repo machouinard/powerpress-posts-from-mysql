@@ -1,0 +1,61 @@
+/* 
+    Document   : Style Sheet
+    Created on : May 21, 2013
+    Author     : Mark Chouinard
+    Description:
+        Stylesheet for PowerPress Posts From MySQL Plugin
+*/
+
+:root {
+    display: block;
+}
+
+.mini-text{
+    font-size: .7em;
+    color: green;
+}
+.ppfm-settings{
+    width: 550px;
+}
+
+fieldset.ppfm-settings input{
+    float: right;
+}
+
+fieldset.ppfm-settings p, hr.ppfm-settings{
+    width: 300px;
+    float: left;
+    text-transform: uppercase;
+}
+
+form.ppfm-settings p input{
+    float: right;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+fieldset{
+    
+    padding: 15px;
+}
+
+legend{
+    font-size: 1.5em;
+    
+}
+
+h1.ppfm-settings{
+    margin-bottom: 0;
+}
+
+form.ppfm-settings p input.affirmative{
+    border: 1px solid green;
+}
+
+form.ppfm-settings p input.negative{
+    border: 1px solid red;
+}
+
+
+
+
