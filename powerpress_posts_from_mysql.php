@@ -141,7 +141,7 @@ echo '<div class="wrap">';
 	}
 
 	if ( count( LocalPodcast::$field_options ) < 10 ){
-		$h2 = __( 'Please fill in or verify your database fields', 'ppfm' );
+		$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
 		echo '<h2>' . $h2 . '</h2>';
 		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_fields" >MySQL Fields Page</a>';
 		return;
@@ -173,6 +173,8 @@ echo '<div class="wrap">';
 }
 
 function ppfm_fields_setup(){
+	$guid_text = __( 'As long as your podcasts are stored in a MySQL table with a primary key, they will all have a unique ID.  The Primary Key value will be appended to the GUID string.  If the custom string field is left blank, the Primary Key value will be appended to the site URL. The ID field cannot be left blank.  If the GUID string is changed after posting, the plugin will not be able to tell what has and has not been posted.', 'ppfm' );
+	$field_names_text = __( 'These refer to the databse field names that correspond to your podcasts', 'ppfm' );
 	$screen = get_current_screen();
 	if( $screen->id != $this->fields_page){
 		return;
@@ -180,7 +182,12 @@ function ppfm_fields_setup(){
 		$screen->add_help_tab( array(
 		'id' => 'ppfm_db_fields',
 		'title' => __('Field Names', 'ppfm'),
-		'content' => '<p>These refer to the databse field names that correspond to your podcasts</p>'
+		'content' => "<p>$field_names_text</p>";
+	));
+	$screen->add_help_tab( array(
+		'id' => 'ppfm_db_guid',
+		'title' => __('GUID / Primary Key', 'ppfm'),
+		'content' => "<p>$guid_text</p>"
 	));
 }
 
@@ -190,7 +197,7 @@ function ppfm_db_setup(){
 	$db_name_text = __( 'This is the name of the database where your podcast information is stored.  It need not be the same as your WordPress database.', 'ppfm' );
 	$db_user_text = __( 'This refers to the login credentials for the database where your podcast information is stored.  They may or may not be the same as your WordPress login.', 'ppfm' );
 	$db_table_text = __( 'This is the name of the database table where your podcast information is stored.  It should not be one of your WordPress tables.', 'ppfm' );
-	$guid_text = __( 'As long as your podcasts are stored in a MySQL table with a primary key, they will all have a unique ID.  The Primary Key value will be appended to the GUID string.  If the custom string field is left blank, the Primary Key value will be appended to the site URL. The ID field cannot be left blank.  If the GUID string is changed after posting, the plugin will not be able to tell what has and has not been posted.', 'ppfm' );
+	
 
 	$screen = get_current_screen();
 	if ( $screen->id != $this->db_page ){
@@ -221,11 +228,7 @@ function ppfm_db_setup(){
 		'title' => __('Database Table', 'ppfm'),
 		'content' => "<p>$db_table_text</p>"
 	));
-	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_guid',
-		'title' => __('GUID / Primary Key', 'ppfm'),
-		'content' => "<p>$guid_text</p>"
-	));
+	
 }
 
 
