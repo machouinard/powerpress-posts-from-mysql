@@ -3,7 +3,7 @@ Contributors: machouinard
 Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
-Tested up to: 3.4.2
+Tested up to: 3.4.1
 Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -92,7 +92,6 @@ v 0.9.4
 
 * Added check to ensure BluBrry PowerPress is installed and activated
 * More CSS and HTML changes in an attempt to pretty this thing up a bit
-* Added a link to the settings page from installed plugins page
 * Changed code to allow for localization
 * Used Google Translate to create .mo files for:
 * French
@@ -116,19 +115,11 @@ v 0.9.1
 * Added ability to post from a range of records in the table based on a specific database field.
 * Added display of total records in table.
 
-== Checking For Duplicate Titles ==
+== Arbitrary section ==
 
-The idea of using GUIDs to check for duplicate podcasts was brought to my attention recently.
-I haven't had a chance to investigate that yet, but if anyone has any suggestions about that please [let me know](http://plugins.markchouinard.me/contact/ "Contact").
-
-
-
-
-
-
-
-
-
+You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
+plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
+"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
 
 == A brief Markdown Example ==
 
