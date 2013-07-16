@@ -88,6 +88,11 @@ The range used to select the records is also displayed.
 8. The 21 records previously published (340 - 360) have been skipped while the 15 new records (325 - 339) have been succesfully posted.
 
 == Changelog ==
+v 0.9.8
+
+* Rewritten from the ground up
+
+
 v 0.9.4
 
 * Added check to ensure BluBrry PowerPress is installed and activated
@@ -115,11 +120,6 @@ v 0.9.1
 * Added ability to post from a range of records in the table based on a specific database field.
 * Added display of total records in table.
 
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
 
 == A brief Markdown Example ==
 
@@ -135,13 +135,5 @@ Unordered list:
 * something else
 * third thing
 
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`
