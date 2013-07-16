@@ -91,7 +91,8 @@ The range used to select the records is also displayed.
 v 0.9.8
 
 * Rewritten from the ground up
-
+* Learned a lot about WordPress
+* Learned a lot about Git, too.
 
 v 0.9.4
 
