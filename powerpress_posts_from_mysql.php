@@ -182,7 +182,7 @@ function ppfm_fields_setup(){
 		$screen->add_help_tab( array(
 		'id' => 'ppfm_db_fields',
 		'title' => __('Field Names', 'ppfm'),
-		'content' => "<p>$field_names_text</p>";
+		'content' => "<p>$field_names_text</p>"
 	));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_guid',
