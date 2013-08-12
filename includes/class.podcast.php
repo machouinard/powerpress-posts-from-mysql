@@ -66,12 +66,14 @@ class Podcast {
 			if ( $status == 'publish' ){
 				$post = array(
 					'ID' => $id,
-					'post_status' => 'draft'
+					'post_status' => 'draft',
+					'edit_date' => true
 				);
 			} else {
 				$post = array(
 					'ID' => $id,
-					'post_status' => 'publish'
+					'post_status' => 'publish',
+					'edit_date' => true
 				);
 			}
 			

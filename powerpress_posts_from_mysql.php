@@ -43,6 +43,7 @@ class ppfmPlugin{
 	protected $podcasts;
 	
 	public function __construct(){
+		define('WP_DEBUG', true);
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
 		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm_list_table.php';
 		add_action ( 'admin_menu', array($this, 'ppfm_add_page') );

@@ -17,10 +17,10 @@ class LocalPodcast {
 		self::$table = self::$db_options[ 'db_table' ];
 		$pass = self::$db_options[ 'db_password' ];
 		$user = self::$db_options[ 'db_user' ];
-		$host = self::$db_options[ 'db_host' ];
+		$host = empty( self::$db_options[ 'db_host' ] ) ? 'localhost' : self::$db_options[ 'db_host' ];
 		$name = self::$db_options[ 'db_name' ];
 		$dsn = "mysql:host=$host;dbname=$name";
-		if ( !empty( $pass) && !empty( $user ) && !empty( $name ) && !empty( $host )){
+		if ( !empty( $pass) && !empty( $user ) && !empty( $name )){
 			self::$dbh = new ezSQL_pdo( $dsn, $user, $pass );
 		}
 		
