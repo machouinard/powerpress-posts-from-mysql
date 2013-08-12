@@ -43,7 +43,6 @@ class ppfmPlugin{
 	protected $podcasts;
 	
 	public function __construct(){
-		define('WP_DEBUG', true);
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
 		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm_list_table.php';
 		add_action ( 'admin_menu', array($this, 'ppfm_add_page') );
@@ -127,14 +126,14 @@ echo '<div class="wrap">';
 		return;
 	}
 
-	if ( !LocalPodcast::$dbh ){
-		$h2 = __('Please fill in or verify your database connection details', 'ppfm');
-		echo '<h2> ' . $h2 . '</h2>';
-		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
-		return;
-	}
+	// if ( !LocalPodcast::$dbh ){
+	// 	$h2 = __('Please fill in or verify your database connection details', 'ppfm');
+	// 	echo '<h2> ' . $h2 . '</h2>';
+	// 	echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
+	// 	return;
+	// }
 
-	if ( empty( LocalPodcast::$db_options[ 'db_table' ] ) || !LocalPodcast::does_table_exist( LocalPodcast::$db_options[ 'db_table' ] ) ) {
+	if ( !LocalPodcast::$dbh || empty( LocalPodcast::$db_options[ 'db_table' ] ) || !LocalPodcast::does_table_exist( LocalPodcast::$db_options[ 'db_table' ] ) ) {
 		$h2 = __('Please fill in or verify your database connection details', 'ppfm');
 		echo '<h2> ' . $h2 . '</h2>';
 		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';

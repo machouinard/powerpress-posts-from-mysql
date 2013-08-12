@@ -10,8 +10,6 @@ class LocalPodcast {
 	
 
 	private function __construct( ){
-		require_once plugin_dir_path( __FILE__ ) . 'ez_sql_core.php';
-		require_once plugin_dir_path( __FILE__ ) . 'ez_sql_pdo.php';
 		self::$db_options = get_option( 'ppfm_db_options');
 		self::$field_options = get_option('ppfm_field_options');
 		self::$table = self::$db_options[ 'db_table' ];
@@ -19,9 +17,8 @@ class LocalPodcast {
 		$user = self::$db_options[ 'db_user' ];
 		$host = empty( self::$db_options[ 'db_host' ] ) ? 'localhost' : self::$db_options[ 'db_host' ];
 		$name = self::$db_options[ 'db_name' ];
-		$dsn = "mysql:host=$host;dbname=$name";
 		if ( !empty( $pass) && !empty( $user ) && !empty( $name )){
-			self::$dbh = new ezSQL_pdo( $dsn, $user, $pass );
+			self::$dbh = new wpdb( $user, $pass, $name, $host );
 		}
 		
 	}
