@@ -12,9 +12,9 @@ if(!class_exists('WP_List_Table')){
 
 /************************** CREATE A PACKAGE CLASS **************************/
 class PPFM_List_Table extends WP_List_Table {
-    
+
     private $podcasts;
-		
+
     function __construct($podcasts, $options){
         require_once plugin_dir_path( __FILE__ ) . 'class.local_podcast.php';
         require_once plugin_dir_path(__FILE__) . 'class.podcast.php';
@@ -26,7 +26,7 @@ class PPFM_List_Table extends WP_List_Table {
             'singular'  => 'podcast',
             'plural'    => 'podcasts', 
             'ajax'      => false        //does not support ajax. yet.
-        ) );
+            ) );
 
     }
 
@@ -46,15 +46,15 @@ class PPFM_List_Table extends WP_List_Table {
     function column_default($item, $column_name){
         switch($column_name){
         	case 'posted':
-        		return null;
-            case 'title':
-            case 'url':
-                return $item[$column_name];
-            default:
+          return null;
+          case 'title':
+          case 'url':
+          return $item[$column_name];
+          default:
                 return print_r($item,true); //Show the whole array for troubleshooting purposes
+            }
         }
-    }
-    
+
         
     /** ************************************************************************
      * Recommended. This is a custom column method and is responsible for what
@@ -85,7 +85,7 @@ class PPFM_List_Table extends WP_List_Table {
             /*$1%s*/ $item[LocalPodcast::$field_options['post_title']],
             /*$2%s*/ $item[LocalPodcast::$field_options['primary_key']],
             /*$3%s*/ $this->row_actions($actions)
-        );
+            );
     }
 
     function column_url($item){
@@ -94,11 +94,11 @@ class PPFM_List_Table extends WP_List_Table {
 
     function column_posted($item){
         $db_id = $item[ 'id' ];
-    	if( LocalPodcast::guid_exists_by_db_id( $db_id )){
-    		return '√';
-    	}
-    }
-    
+        if( LocalPodcast::guid_exists_by_db_id( $db_id )){
+          return '√';
+      }
+  }
+
     /** ************************************************************************
      * REQUIRED if displaying checkboxes or using bulk actions! The 'cb' column
      * is given special treatment when columns are processed. It ALWAYS needs to
@@ -113,7 +113,7 @@ class PPFM_List_Table extends WP_List_Table {
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("podcast")
             /*$2%s*/ $item[LocalPodcast::$field_options['primary_key']]                //The value of the checkbox should be the record's id
-        );
+            );
     }
     
     
@@ -136,7 +136,7 @@ class PPFM_List_Table extends WP_List_Table {
             'posted' => 'Posted',
             'title'     => 'Title',
             'url'    => 'URL'
-        );
+            );
         return $columns;
     }
     
@@ -159,7 +159,7 @@ class PPFM_List_Table extends WP_List_Table {
         	'posted' => array('posted',false),//true means it's already sorted
             'title'     => array('title',false),     
             'url'    => array('url',false)
-        );
+            );
         return $sortable_columns;
     }
     
@@ -181,9 +181,9 @@ class PPFM_List_Table extends WP_List_Table {
     function get_bulk_actions() {
         $actions = array(
             'create'    => 'Post',
-            'draft' => 'Post as Draft',
+            'draft' => 'Draft',
             'remove' => 'Remove Post'
-        );
+            );
         return $actions;
     }
     
@@ -200,63 +200,87 @@ class PPFM_List_Table extends WP_List_Table {
      **************************************************************************/
     function process_bulk_action() {
 
-        
-        //Detect when a bulk action is being triggered...
+
+    //Detect when a bulk action is being triggered...
         if( 'create_rollover' == $this->current_action() ) {
-            // print_r($_GET);die('list_table 206');
+    // print_r($_GET);die('list_table 206');
             wp_verify_nonce( 'ppfm_nonce_url_check' );
             $id = $_GET[ 'podcast' ];
             $podcast = new Podcast( $id );
-            // echo '<pre>';
-            // print_r($podcast);
-            // echo '</pre>';
-            // die('list_table 210');
-            $result = $podcast->publish();
-            if( is_wp_error( $result )){
-                wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
-            }     
-       }       
-      
-       if( 'draft_rollover' == $this->current_action() ) {
-        	wp_verify_nonce( 'ppfm_nonce_url_check' );
-           $id = $_GET['podcast'];
-            $podcast = new Podcast($id);
-            $result = $podcast->publish_draft();
-            if( is_wp_error( $result )){
-                wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
-            }  
-        }
+    //does GUID exist?
+            if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
+    // YES - what's the status?
+                $status = get_post_status( $postID );
+    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
+    // Draft - update post status to publish
+                if ( $status == 'draft' ) {
+                    if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
+                        echo 'shit. 255 ppfm_list_table';die();
+                    }
+                }
+            } else {
+    // NO - publish()
+                $result = $podcast->publish();
+                if( is_wp_error( $result )){
+                    wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
+                } 
+            }    
+        }       
 
-        if( 'remove_rollover' == $this->current_action() ) {
-        	wp_verify_nonce( 'ppfm_nonce_url_check' );
-            $podcast = new Podcast($_GET [ 'podcast' ] );
-            $result = $podcast->remove();
-            if( is_wp_error( $result )){
-                wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
+        if( 'draft_rollover' == $this->current_action() ) {
+            wp_verify_nonce( 'ppfm_nonce_url_check' );
+            $id = $_GET['podcast'];
+            $podcast = new Podcast($id);
+    // Does GUID exist?
+            if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
+    // YES - what's the status?
+                $status = get_post_status( $postID );
+                if ( $status == 'publish' ) {
+                    if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
+                        wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
+                    }
+                }
+            } else {
+                $result = $podcast->publish_draft();
+                if( is_wp_error( $result )){
+                    wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
+                } 
             } 
         }
 
+        if( 'remove_rollover' == $this->current_action() ) {
+            wp_verify_nonce( 'ppfm_nonce_url_check' );
+            $podcast = new Podcast($_GET [ 'podcast' ] );
+    // Does GUID exist?
+            if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ) {
+                $result = $podcast->remove();
+                if( is_wp_error( $result )){
+                    wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
+                } 
+            }
+        }
+
         if ( 'create' == $this->current_action()){
-            // echo '<pre>';
-            // print_r( $_GET );
-            // echo '</pre>';
-            // die( 'list_table 243' );
-        	wp_verify_nonce( 'bulk-actions' );
+    // echo '<pre>';
+    // print_r( $_GET );
+    // echo '</pre>';
+    // die( 'list_table 243' );
+            wp_verify_nonce( 'bulk-actions' );
             foreach ( $_GET['podcast'] as $id ) {
                 $podcast = new Podcast($id);
-                //does GUID exist?
+    //does GUID exist?
                 if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
-                    // YES - what's the status?
+    // YES - what's the status?
                     $status = get_post_status( $postID );
-                    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
-                        // Draft - update post status to publish
-                        if ( $status == 'draft' ) {
-                            if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
-                                echo 'shit. 255 ppfm_list_table';die();
-                            }
+    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
+    // Draft - update post status to publish
+                    if ( $status == 'draft' ) {
+                        if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
+                            echo 'shit. 255 ppfm_list_table';die();
                         }
+                    }
                 } else {
-                    // NO - publish()
+    // NO - publish()
                     $result = $podcast->publish();
                     if( is_wp_error( $result )){
                         wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
@@ -265,18 +289,18 @@ class PPFM_List_Table extends WP_List_Table {
             }
         }
         if ( 'draft' == $this->current_action()){
-        	wp_verify_nonce( 'bulk-actions' );
+            wp_verify_nonce( 'bulk-actions' );
             foreach ( $_GET[ 'podcast' ] as $id ) {
                 $podcast = new Podcast($id);
-                // Does GUID exist?
+    // Does GUID exist?
                 if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
-                    // YES - what's the status?
+    // YES - what's the status?
                     $status = get_post_status( $postID );
                     if ( $status == 'publish' ) {
-                            if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
-                                wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
-                            }
+                        if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
+                            wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
                         }
+                    }
                 } else {
                     $result = $podcast->publish_draft();
                     if( is_wp_error( $result )){
@@ -286,23 +310,23 @@ class PPFM_List_Table extends WP_List_Table {
             }
         }
         if ( 'remove' == $this->current_action()){
-        	wp_verify_nonce( 'bulk-actions' );
+            wp_verify_nonce( 'bulk-actions' );
             foreach ( $_GET[ 'podcast' ] as $id ) {
                 $podcast = new Podcast($id );
-                // Does GUID exist?
+    // Does GUID exist?
                 if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ) {
                     $result = $podcast->remove();
                     if( is_wp_error( $result )){
                         wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
                     } 
                 }
-                
+
             }
         }
 
     }
-    
-    
+
+
     /** ************************************************************************
      * REQUIRED! This is where you prepare your data for display. This method will
      * usually be used to query the database, sort and filter the data, and generally
@@ -365,7 +389,7 @@ class PPFM_List_Table extends WP_List_Table {
          * be able to use your precisely-queried data immediately.
          */
         $data = $this->podcasts;
-                
+
         
         /**
          * This checks for sorting input and sorts the data in our array accordingly.
@@ -375,13 +399,9 @@ class PPFM_List_Table extends WP_List_Table {
          * to a custom query. The returned data will be pre-sorted, and this array
          * sorting technique would be unnecessary.
          */
-        function usort_reorder($a,$b){
-            $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
-            $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
-            $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
-            return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
-        }
-        usort($data, 'usort_reorder');
+        // function usort_reorder was here for some reason-- Moved outside of prepare_items() *******
+        // 
+        usort($data, array( $this, 'usort_reorder'));
         
         
         /***********************************************************************
@@ -394,7 +414,7 @@ class PPFM_List_Table extends WP_List_Table {
          * ---------------------------------------------------------------------
          **********************************************************************/
         
-                
+
         /**
          * REQUIRED for pagination. Let's figure out what page the user is currently 
          * looking at. We'll need this later, so you should always include it in 
@@ -434,57 +454,65 @@ class PPFM_List_Table extends WP_List_Table {
             'total_items' => $total_items,                  //WE have to calculate the total number of items
             'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
             'total_pages' => ceil($total_items/$per_page)   //WE have to calculate the total number of pages
-        ) );
+            ) );
     }
 
-    // Build actions array
-    static function build_actions( $item ) {
-        // echo '<pre>';
-        // print_r(LocalPodcast::$field_options);
-        // die('list_table 409');
-        $actions = array();
-        $draft = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'draft_rollover',$item[LocalPodcast::$field_options['primary_key']]);
-        $remove = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'remove_rollover',$item[LocalPodcast::$field_options['primary_key']]);
-        $create = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'create_rollover',$item[LocalPodcast::$field_options['primary_key']]);
-        
-        $draft_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Post Draft</a>';
-        $remove_url = '<a href=' . wp_nonce_url( $remove, "ppfm_nonce_url_check" ) . '>Remove</a>';
-        $create_url = '<a href=' . wp_nonce_url( $create, "ppfm_nonce_url_check" ) .'>Post</a>';
-        $to_draft_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Switch to draft</a>';
-        $to_publish_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Switch to published</a>';
-        
+    function usort_reorder($a,$b){
+            $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
+            $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
+            $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
+            return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
+        }
 
-        $db_id = $item[ 'id' ];
+    // Build actions array
+        static function build_actions( $item ) {
+        // echo '<pre>';
+        // print_r($item);
+        // echo '</pre>';die('ppfm_list_table 447');
+
+            $actions = array();
+            $draft = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'draft_rollover',$item[LocalPodcast::$field_options['primary_key']]);
+            $remove = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'remove_rollover',$item[LocalPodcast::$field_options['primary_key']]);
+            $create = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'create_rollover',$item[LocalPodcast::$field_options['primary_key']]);
+
+            $draft_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Post Draft</a>';
+            $remove_url = '<a href=' . wp_nonce_url( $remove, "ppfm_nonce_url_check" ) . '>Remove</a>';
+            $create_url = '<a href=' . wp_nonce_url( $create, "ppfm_nonce_url_check" ) .'>Post</a>';
+            $to_draft_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Switch to draft</a>';
+            $to_publish_url = '<a href=' . wp_nonce_url( $draft, "ppfm_nonce_url_check" ) .'>Switch to published</a>';
+
+
+            $db_id = $item[ 'id' ];
         // build guid for this db_id
-        $guid = LocalPodcast::create_guid( $db_id );
+            $guid = LocalPodcast::create_guid( $db_id );
         // echo $guid;die( 'list_taable 425');
         // does a post with this guid exist?
-        if ( $post_id = LocalPodcast::guid_exists( $guid ) ){
+            if ( $post_id = LocalPodcast::guid_exists( $guid ) ){
             // if YES, what is the post status?
-            $status = get_post_status( $post_id );
+                $status = get_post_status( $post_id );
             // if publish, create draft and remove links
-            if ( $status == 'publish' ) {
-                $actions[ 'draft' ] = $to_draft_url;
-                $actions[ 'remove' ] = $remove_url;
+                if ( $status == 'publish' ) {
+                    $actions[ 'draft' ] = $to_draft_url;
+                    $actions[ 'remove' ] = $remove_url;
                 // else if draft, create update and remove links
+                } else {
+                    $actions[ 'draft' ] = $to_publish_url;
+                    $actions[ 'remove' ] = $remove_url;
+                } 
             } else {
-                $actions[ 'draft' ] = $to_publish_url;
-                $actions[ 'remove' ] = $remove_url;
-            } 
-        } else {
             // if NO, create publish publish and draft links
-            $actions[ 'create' ] = $create_url;
-            $actions[ ' draft' ] = $draft_url;
-        }
+                $actions[ 'create' ] = $create_url;
+                $actions[ ' draft' ] = $draft_url;
+            }
        // echo '<pre>';
        // print_r($actions['create']);
        // echo '</pre>';
        // die('list_table 454');
-        return $actions;
+            return $actions;
+        }
+
+
     }
-    
-    
-}
 
 
 

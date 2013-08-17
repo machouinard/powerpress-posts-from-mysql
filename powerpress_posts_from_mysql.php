@@ -38,6 +38,7 @@
 
 class ppfmPlugin{
 
+	protected $menu_page;
 	protected $db_page;
 	protected $fields_page;
 	protected $podcasts;
@@ -53,62 +54,71 @@ class ppfmPlugin{
 
 
 	public function ppfm_add_page(){
-		add_menu_page( __('PowerPress posts from MySQL', 'ppfm'), __('PowerPress from MySQL', 'ppfm'), 'manage_options', 'ppfm_plugin', array($this, 'ppfm_podcasts_page') );
+		$this->menu_page = add_menu_page( __('PowerPress posts from MySQL', 'ppfm'), __('PowerPress from MySQL', 'ppfm'), 'manage_options', 'ppfm_plugin', array($this, 'ppfm_podcasts_page') );
 		$this->db_page = add_submenu_page( 'ppfm_plugin', __('MySQL Connection', 'ppfm'), __('MySQL Connection', 'ppfm'), 'manage_options', 'ppfm_plugin_db_connect', array($this, 'ppfm_plugin_db_connect_page') );
 		$this->fields_page = add_submenu_page( 'ppfm_plugin', __('MySQL Fields', 'ppfm'), __('MySQL Fields', 'ppfm'), 'manage_options', 'ppfm_plugin_db_fields', array($this, 'ppfm_plugin_db_fields_page') );
 		add_action('load-' . $this->db_page, array($this, 'ppfm_db_setup') );
 		add_action('load-'.$this->fields_page, array( $this, 'ppfm_fields_setup') );
+		add_action( 'load-' . $this->menu_page, array( $this, 'ppfm_screen_options' ) );
 	}
 
 
+	function ppfm_screen_options() {
+		$option = 'per_page';
+		$args = array( 
+			'label' => 'Podcasts',
+			'default' => 5,
+			'option' => 'podcasts_per_page'
+		);
+		add_screen_option( $option, $args );
+	}
 
-
-function ppfm_plugin_db_connect_page(){
-	$h2 = __('PowerPress Posts From MySQL Connection', 'ppfm');
-	?>
-	<div class="wrap">
-		<h2><?php echo $h2; ?></h2>
-		<?php settings_errors( ); ?>
-		<form action="options.php" method="post">
-			<?php settings_fields('ppfm_db_options'); ?>
-			<?php do_settings_sections( 'ppfm_plugin'); ?>
-			<?php do_settings_sections( 'ppfm_guid' ); ?>
-		<?php submit_button( ); ?>
-	</form>
-</div>
-<?php
-}
-
-function ppfm_plugin_db_fields_page(){
-		$h2 = __('PowerPress Posts From MySQL Fields', 'ppfm');
-	?>
-	<div class="wrap">
+	function ppfm_plugin_db_connect_page(){
+		$h2 = __('PowerPress Posts From MySQL Connection', 'ppfm');
+		?>
+		<div class="wrap">
+			<h2><?php echo $h2; ?></h2>
+			<?php settings_errors( ); ?>
+			<form action="options.php" method="post">
+				<?php settings_fields('ppfm_db_options'); ?>
+				<?php do_settings_sections( 'ppfm_plugin'); ?>
+				<?php do_settings_sections( 'ppfm_guid' ); ?>
+				<?php submit_button( ); ?>
+			</form>
+		</div>
 		<?php
+	}
+
+	function ppfm_plugin_db_fields_page(){
+		$h2 = __('PowerPress Posts From MySQL Fields', 'ppfm');
+		?>
+		<div class="wrap">
+			<?php
 			if ( count( LocalPodcast::$db_options ) <5 ) {
 				$h2 = __('Please fill in or verify your database connection details', 'ppfm');
 				echo '<h2> ' . $h2 . '</h2>';
 				echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
 				return;
 			}
-		?>
-		<h2><?php echo $h2; ?></h2>
-		<?php settings_errors( ); ?>
-		<form action="options.php" method="post">
+			?>
+			<h2><?php echo $h2; ?></h2>
+			<?php settings_errors( ); ?>
+			<form action="options.php" method="post">
 				<?php settings_fields( 'ppfm_field_options'); ?>
 				<?php do_settings_sections( 'ppfm_plugin_db_fields' ); ?>
-			<?php submit_button(); ?>
-		</form>
-	</div>
-	<?php
-}
+				<?php submit_button(); ?>
+			</form>
+		</div>
+		<?php
+	}
 
-function ppfm_podcasts_page(){
-	
-	if (!current_user_can('manage_options'))
-    {
-      wp_die(__('You do not have sufficient permissions to access this page.', 'ppfm'));
-    }
-echo '<div class="wrap">';
+	function ppfm_podcasts_page(){
+
+		if (!current_user_can('manage_options'))
+		{
+			wp_die(__('You do not have sufficient permissions to access this page.', 'ppfm'));
+		}
+		echo '<div class="wrap">';
 
 // echo '<pre>';
 // print_r( LocalPodcast::$db_options );
@@ -119,12 +129,12 @@ echo '<div class="wrap">';
 // 	echo 'yes';die('ppfm 118');
 // }
 
-	if( !defined ( 'POWERPRESS_VERSION' )){
-		$h2 = __( 'This plugin requires the Blubrry PowerPress plugin.  Please install or Activate it now', 'ppfm' );
-		echo '<h2>' . $h2 . '</h2>';
-		echo '<a href="http://create.blubrry.com/resources/powerpress/" >Blubrry PowerPress</a>';
-		return;
-	}
+		if( !defined ( 'POWERPRESS_VERSION' )){
+			$h2 = __( 'This plugin requires the Blubrry PowerPress plugin.  Please install or Activate it now', 'ppfm' );
+			echo '<h2>' . $h2 . '</h2>';
+			echo '<a href="http://create.blubrry.com/resources/powerpress/" >Blubrry PowerPress</a>';
+			return;
+		}
 
 	// if ( !LocalPodcast::$dbh ){
 	// 	$h2 = __('Please fill in or verify your database connection details', 'ppfm');
@@ -133,43 +143,43 @@ echo '<div class="wrap">';
 	// 	return;
 	// }
 
-	if ( !LocalPodcast::$dbh || empty( LocalPodcast::$db_options[ 'db_table' ] ) || !LocalPodcast::does_table_exist( LocalPodcast::$db_options[ 'db_table' ] ) ) {
-		$h2 = __('Please fill in or verify your database connection details', 'ppfm');
-		echo '<h2> ' . $h2 . '</h2>';
-		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
-		return;
-	}
+		if ( !LocalPodcast::$dbh || empty( LocalPodcast::$db_options[ 'db_table' ] ) || !LocalPodcast::does_table_exist( LocalPodcast::$db_options[ 'db_table' ] ) ) {
+			$h2 = __('Please fill in or verify your database connection details', 'ppfm');
+			echo '<h2> ' . $h2 . '</h2>';
+			echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
+			return;
+		}
 
-	if ( count( LocalPodcast::$field_options ) < 10 ){
-		$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
-		echo '<h2>' . $h2 . '</h2>';
-		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_fields" >MySQL Fields Page</a>';
-		return;
-	}
-	
-	settings_errors( );
+		if ( count( LocalPodcast::$field_options ) < 10 ){
+			$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
+			echo '<h2>' . $h2 . '</h2>';
+			echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_fields" >MySQL Fields Page</a>';
+			return;
+		}
 
-	$this->podcasts = LocalPodcast::get_podcasts();
-	$table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
-	$table->prepare_items();
-	$count = LocalPodcast::count_podcasts();
-	$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
-	?>
-	<!-- <div class="wrap"> -->
-	<div id="icon-users" class="icon32"><br /></div>
-	<h2><?php echo $h2; ?></h2>
-	<?php
+		settings_errors( );
+
+		$this->podcasts = LocalPodcast::get_podcasts();
+		$table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
+		$table->prepare_items();
+		$count = LocalPodcast::count_podcasts();
+		$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
+		?>
+		<!-- <div class="wrap"> -->
+		<div id="icon-users" class="icon32"><br /></div>
+		<h2><?php echo $h2; ?></h2>
+		<?php
 		
 
-	?>
-	<form id="podcasts-filter" action='options.php' method="get">
-            <!-- For plugins, we also need to ensure that the form posts back to our current page -->
-            <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-            <!-- Now we can render the completed list table -->
-            <?php $table->display() ?>
-        </form>
-      </div>
-      <?php
+		?>
+		<form id="podcasts-filter" action='options.php' method="get">
+			<!-- For plugins, we also need to ensure that the form posts back to our current page -->
+			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+			<!-- Now we can render the completed list table -->
+			<?php $table->display() ?>
+		</form>
+	</div>
+	<?php
 }
 
 function ppfm_fields_setup(){
@@ -179,16 +189,16 @@ function ppfm_fields_setup(){
 	if( $screen->id != $this->fields_page){
 		return;
 	}
-		$screen->add_help_tab( array(
+	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_fields',
 		'title' => __('Field Names', 'ppfm'),
 		'content' => "<p>$field_names_text</p>"
-	));
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_guid',
 		'title' => __('GUID / Primary Key', 'ppfm'),
 		'content' => "<p>$guid_text</p>"
-	));
+		));
 }
 
 function ppfm_db_setup(){
@@ -207,27 +217,27 @@ function ppfm_db_setup(){
 		'id' => 'ppfm_db_host',
 		'title' => __('Database Host', 'ppfm'),
 		'content' => "<p>$host_text</p>"
-	));
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_Port',
 		'title' => __('Database Port', 'ppfm'),
 		'content' => "<p>$port_text</p>"
-	));
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_name',
 		'title' => __('Database Name', 'ppfm'),
 		'content' => "<p>$db_name_text</p>"
-	));
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_user',
 		'title' => __('User & Password', 'ppfm'),
 		'content' => "<p>$db_user_text</p>"
-	));
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_table',
 		'title' => __('Database Table', 'ppfm'),
 		'content' => "<p>$db_table_text</p>"
-	));
+		));
 	
 }
 
@@ -237,89 +247,89 @@ function ppfm_plugin_field_page_init(){
 		'ppfm_field_options',
 		'ppfm_field_options',
 		array( $this, 'ppfm_plugin_validate_field')
-	);
+		);
 	add_settings_section(
-	     'ppfm_plugin_fields',
-	     __( 'Database Field Settings', 'ppfm'),
-	     array( $this, 'ppfm_plugin_fields_description'),
-	     'ppfm_plugin_db_fields'
-	);
+		'ppfm_plugin_fields',
+		__( 'Database Field Settings', 'ppfm'),
+		array( $this, 'ppfm_plugin_fields_description'),
+		'ppfm_plugin_db_fields'
+		);
 	add_settings_section(
 		'ppfm_plugin_guid',
 		__( 'Custom GUID Settings', 'ppfm' ),
 		array( $this, 'ppfm_plugin_guid_description' ),
 		'ppfm_plugin_db_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_title',
 		__( 'Post title field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_title_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_category',
 		__( 'Post category field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_category_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_body',
 		__( 'Post body field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_body_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_image',
 		__( 'Post image location field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_image_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_url',
 		__( 'Podcast url field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_url_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_size',
 		__( 'Podcast size field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_size_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_type',
 		__( 'Podcast Media type field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_type_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_post_date',
 		__( 'Post date field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_date_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_guid',
 		__( 'Custom GUID String', 'ppfm'),
 		array( $this, 'ppfm_plugin_guid_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_guid'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_db_id',
 		__( 'MySQL Primary Key Field', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_id_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_guid'
-	);
+		);
 }
 
 
@@ -328,20 +338,20 @@ function ppfm_plugin_admin_init(){
 		'ppfm_db_options',
 		'ppfm_db_options'
 		// array( $this, 'ppfm_plugin_db_validate')
-	);	
+		);	
 	add_settings_section(
 		'ppfm_plugin_db',
 		__( 'Database Connection Settings', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_description'),
 		'ppfm_plugin'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_db_host',
 		__( 'Database Host', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_host_input' ),
 		'ppfm_plugin',
 		'ppfm_plugin_db'
-	);
+		);
 	// add_settings_field(
 	// 	'ppfm_plugin_db_port',
 	// 	__( 'Database Port', 'ppfm'),
@@ -355,28 +365,28 @@ function ppfm_plugin_admin_init(){
 		array( $this, 'ppfm_plugin_db_name_input' ),
 		'ppfm_plugin',
 		'ppfm_plugin_db'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_db_user',
 		__( 'Database User', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_user_input' ),
 		'ppfm_plugin',
 		'ppfm_plugin_db'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_db_password',
 		__( 'Database Password', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_password_input' ),
 		'ppfm_plugin',
 		'ppfm_plugin_db'
-	);
+		);
 	add_settings_field(
 		'ppfm_plugin_db_table',
 		__( 'Database Table', 'ppfm'),
 		array( $this, 'ppfm_plugin_db_table_input' ),
 		'ppfm_plugin',
 		'ppfm_plugin_db'
-	);
+		);
 	
 }
 
@@ -416,11 +426,11 @@ function ppfm_plugin_db_validate($item){
 		} else {
 			$err_msg = sprintf( __('Please verify your %s field is complete and correct', 'ppfm'), $k );
 			add_settings_error(
-		      'ppfm_plugin_db_error',
-		      'ppfm_db_error',
-		      $err_msg,
-		      'error'
-		    );
+				'ppfm_plugin_db_error',
+				'ppfm_db_error',
+				$err_msg,
+				'error'
+				);
 		}
 	}
 	return $good;
@@ -441,11 +451,11 @@ function ppfm_plugin_validate_field($input){
 		} else {
 			$err_msg = sprintf(__('Please verify your %s field is complete and correct', 'ppfm'), $k );
 			add_settings_error(
-		      'ppfm_plugin_post_title',
-		      'ppfm_field_error',
-		      $err_msg,
-		      'error'
-		    );
+				'ppfm_plugin_post_title',
+				'ppfm_field_error',
+				$err_msg,
+				'error'
+				);
 		}
 	}
 	return $exist;;
