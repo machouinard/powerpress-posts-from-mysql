@@ -240,35 +240,63 @@ class PPFM_List_Table extends WP_List_Table {
             // echo '<pre>';
             // print_r( $_GET );
             // echo '</pre>';
-            // die( 'list_table 240' );
+            // die( 'list_table 243' );
         	wp_verify_nonce( 'bulk-actions' );
-            foreach ( $_GET[ 'podcast' ] as $id ) {
-                $podcast = new Podcast($id); 
-                $result = $podcast->publish();
-                if( is_wp_error( $result )){
-                    wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
-                } 
+            foreach ( $_GET['podcast'] as $id ) {
+                $podcast = new Podcast($id);
+                //does GUID exist?
+                if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
+                    // YES - what's the status?
+                    $status = get_post_status( $postID );
+                    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
+                        // Draft - update post status to publish
+                        if ( $status == 'draft' ) {
+                            if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
+                                echo 'shit. 255 ppfm_list_table';die();
+                            }
+                        }
+                } else {
+                    // NO - publish()
+                    $result = $podcast->publish();
+                    if( is_wp_error( $result )){
+                        wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
+                    } 
+                }
             }
-        	
         }
         if ( 'draft' == $this->current_action()){
         	wp_verify_nonce( 'bulk-actions' );
             foreach ( $_GET[ 'podcast' ] as $id ) {
                 $podcast = new Podcast($id);
-                $result = $podcast->publish_draft();
-                if( is_wp_error( $result )){
-                    wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
-                } 
+                // Does GUID exist?
+                if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
+                    // YES - what's the status?
+                    $status = get_post_status( $postID );
+                    if ( $status == 'publish' ) {
+                            if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
+                                wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
+                            }
+                        }
+                } else {
+                    $result = $podcast->publish_draft();
+                    if( is_wp_error( $result )){
+                        wp_die( $result->get_error_message(), __( 'Publish Error', 'ppfm' ) );
+                    } 
+                }
             }
         }
         if ( 'remove' == $this->current_action()){
         	wp_verify_nonce( 'bulk-actions' );
             foreach ( $_GET[ 'podcast' ] as $id ) {
                 $podcast = new Podcast($id );
-                $result = $podcast->remove();
-                if( is_wp_error( $result )){
-                    wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
-                } 
+                // Does GUID exist?
+                if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ) {
+                    $result = $podcast->remove();
+                    if( is_wp_error( $result )){
+                        wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
+                    } 
+                }
+                
             }
         }
 
