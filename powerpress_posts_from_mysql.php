@@ -42,6 +42,7 @@ class ppfmPlugin{
 	protected $db_page;
 	protected $fields_page;
 	protected $podcasts;
+	protected $table;
 	
 	public function __construct(){
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
@@ -49,6 +50,7 @@ class ppfmPlugin{
 		add_action ( 'admin_menu', array($this, 'ppfm_add_page') );
 		add_action ('admin_init', array($this, 'ppfm_plugin_field_page_init') );
 		add_action('admin_init', array($this, 'ppfm_plugin_admin_init') );
+		add_filter('set-screen-option', array($this, 'ppfm_set_option'), 10, 3);
 		$start = LocalPodcast::get_instance();
 	}
 
@@ -71,6 +73,13 @@ class ppfmPlugin{
 			'option' => 'podcasts_per_page'
 		);
 		add_screen_option( $option, $args );
+		$this->podcasts = LocalPodcast::get_podcasts();
+		$this->table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
+
+	}
+
+	function ppfm_set_option($status, $option, $value){
+		return $value;
 	}
 
 	function ppfm_plugin_db_connect_page(){
@@ -159,9 +168,7 @@ class ppfmPlugin{
 
 		settings_errors( );
 
-		$this->podcasts = LocalPodcast::get_podcasts();
-		$table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
-		$table->prepare_items();
+		$this->table->prepare_items();
 		$count = LocalPodcast::count_podcasts();
 		$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
 		?>
@@ -176,7 +183,7 @@ class ppfmPlugin{
 			<!-- For plugins, we also need to ensure that the form posts back to our current page -->
 			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
 			<!-- Now we can render the completed list table -->
-			<?php $table->display() ?>
+			<?php $this->table->display() ?>
 		</form>
 	</div>
 	<?php

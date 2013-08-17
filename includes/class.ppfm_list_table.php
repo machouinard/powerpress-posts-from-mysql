@@ -19,7 +19,7 @@ class PPFM_List_Table extends WP_List_Table {
         require_once plugin_dir_path( __FILE__ ) . 'class.local_podcast.php';
         require_once plugin_dir_path(__FILE__) . 'class.podcast.php';
         $this->podcasts = $podcasts;
-        global $status, $page;
+        global $status, $page, $current_user;
 
         //Set parent defaults
         parent::__construct( array(
@@ -348,7 +348,7 @@ class PPFM_List_Table extends WP_List_Table {
         /**
          * First, lets decide how many records per page to show
          */
-        $per_page = 5;
+        $per_page = $this->get_items_per_page('podcasts_per_page', 5);
         
         
         /**
