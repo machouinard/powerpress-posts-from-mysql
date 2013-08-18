@@ -18,7 +18,8 @@ class PPFM_List_Table extends WP_List_Table {
     function __construct($podcasts, $options){
         require_once plugin_dir_path( __FILE__ ) . 'class.local_podcast.php';
         require_once plugin_dir_path(__FILE__) . 'class.podcast.php';
-        $this->podcasts = $podcasts;
+        // $this->podcasts = $podcasts;
+        $this->podcasts = LocalPodcast::get_podcasts();
         global $status, $page, $current_user;
 
         //Set parent defaults
