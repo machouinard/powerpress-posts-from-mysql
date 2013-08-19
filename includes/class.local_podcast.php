@@ -37,13 +37,21 @@ class LocalPodcast {
 		return TRUE;
 	}
 
-	static function get_podcasts( ) {
+	static function get_podcasts( $search=null ) {
+		// print_r(self::$field_options);die(' 41 local_podcast');
+		$title_col = self::$field_options['post_title'];
+		$url_col = self::$field_options['post_url'];
 		$table = self::$table;
-		$podcasts = self::$dbh->get_results( "SELECT * FROM $table", ARRAY_A );
+		if ( $search == null){
+			$podcasts = self::$dbh->get_results( "SELECT * FROM $table", ARRAY_A );
+		} else {
+			$podcasts = self::$dbh->get_results( "SELECT * FROM $table WHERE `$title_col` LIKE '%{$search}%'", ARRAY_A);
+		}
+		
 		if ( $podcasts ){
 			return $podcasts;
 		}
-		return "No Podcasts Found!";
+		return array();
 	}
 
 	static function count_podcasts( ) {

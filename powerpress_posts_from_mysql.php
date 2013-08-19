@@ -98,6 +98,7 @@ class ppfmPlugin{
 	}
 
 	// function ppfm_plugin_enqueue_styles() {
+	// the latest incarnation of wp_register_style.  I'm done mucking about with this.
 	// 	wp_register_style( 'ppfm_wp_admin_css', plugins_url('assets/css/ppfm-style.css', __FILE__) ); 
  //        wp_enqueue_style( 'ppfm_wp_admin_css' );
 	// }
@@ -187,14 +188,25 @@ class ppfmPlugin{
 		}
 
 		settings_errors( );
-
-		$this->table->prepare_items();
+		
+		if( isset($_POST['s']) ){
+			$this->table->prepare_items($_POST['s']);
+		} else {
+			$this->table->prepare_items();
+}
+		
 		$count = LocalPodcast::count_podcasts();
 		$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
 		?>
 		<!-- <div class="wrap"> -->
 		<div id="icon-users" class="icon32"><br /></div>
 		<h2><?php echo $h2; ?></h2>
+
+		<!-- SEARCH ATTEMPT 1 -->
+		<form method="post">
+		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+		<?php $this->table->search_box('Search Podcasts', 'ppfm'); ?>
+		</form>
 		<?php
 		
 

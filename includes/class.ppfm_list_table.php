@@ -18,8 +18,7 @@ class PPFM_List_Table extends WP_List_Table {
     function __construct(){
         require_once plugin_dir_path( __FILE__ ) . 'class.local_podcast.php';
         require_once plugin_dir_path(__FILE__) . 'class.podcast.php';
-        // $this->podcasts = $podcasts;
-        $this->podcasts = LocalPodcast::get_podcasts();
+        // $this->podcasts = LocalPodcast::get_podcasts();
         global $status, $page, $current_user;
 
         //Set parent defaults
@@ -346,7 +345,7 @@ class PPFM_List_Table extends WP_List_Table {
      * @uses $this->get_pagenum()
      * @uses $this->set_pagination_args()
      **************************************************************************/
-    function prepare_items() {
+    function prepare_items($search=null) {
         global $wpdb; //This is used only if making any database queries
 
         /**
@@ -392,8 +391,9 @@ class PPFM_List_Table extends WP_List_Table {
          * use sort and pagination data to build a custom query instead, as you'll
          * be able to use your precisely-queried data immediately.
          */
-        $data = $this->podcasts;
-
+        // $data = $this->podcasts;
+        $data = LocalPodcast::get_podcasts($search);
+// print_r($data);wp_die(' 396 list_table');
         
         /**
          * This checks for sorting input and sorts the data in our array accordingly.
