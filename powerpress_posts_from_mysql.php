@@ -48,6 +48,8 @@ class ppfmPlugin{
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
 		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm_list_table.php';
 		add_action ( 'admin_menu', array($this, 'ppfm_add_page') );
+		// add_action ( 'admin_enqueue_scripts', array($this, 'ppfm_plugin_enqueue_styles' ) );
+		add_action('admin_head', array($this, 'ppfm_admin_header'));
 		add_action ('admin_init', array($this, 'ppfm_plugin_field_page_init') );
 		add_action('admin_init', array($this, 'ppfm_plugin_admin_init') );
 		add_filter('set-screen-option', array($this, 'ppfm_set_option'), 10, 3);
@@ -81,6 +83,24 @@ class ppfmPlugin{
 	function ppfm_set_option($status, $option, $value){
 		return $value;
 	}
+
+	function ppfm_admin_header(){
+		$page = ( isset($_GET['page'])) ? esc_attr($_GET['page']) : false;
+		if( 'ppfm_plugin' != $page ){
+			return;
+		}
+		echo '<style type="text/css">';
+		echo '.wp-list-table .column-cb { width: 5%; }';
+		echo '.wp-list-table .column-posted { width: 10%; }';
+		echo '.wp-list-table .column-title { width: 40%; }';
+		// echo '.wp-list-table .column-url { width: 45%; }';
+		echo '</style>';
+	}
+
+	// function ppfm_plugin_enqueue_styles() {
+	// 	wp_register_style( 'ppfm_wp_admin_css', plugins_url('assets/css/ppfm-style.css', __FILE__) ); 
+ //        wp_enqueue_style( 'ppfm_wp_admin_css' );
+	// }
 
 	function ppfm_plugin_db_connect_page(){
 		$h2 = __('PowerPress Posts From MySQL Connection', 'ppfm');
