@@ -182,7 +182,7 @@ class PPFM_List_Table extends WP_List_Table {
         $actions = array(
             'create'    => 'Post',
             'draft' => 'Draft',
-            'remove' => 'Remove Post'
+            'remove' => 'Remove'
             );
         return $actions;
     }

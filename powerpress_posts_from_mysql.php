@@ -188,7 +188,7 @@ class ppfmPlugin{
 		}
 
 		settings_errors( );
-		
+
 		if( isset($_POST['s']) ){
 			$this->table->prepare_items($_POST['s']);
 		} else {
@@ -222,8 +222,8 @@ class ppfmPlugin{
 }
 
 function ppfm_fields_setup(){
-	$guid_text = __( 'As long as your podcasts are stored in a MySQL table with a primary key, they will all have a unique ID.  The Primary Key value will be appended to the GUID string.  If the custom string field is left blank, the Primary Key value will be appended to the site URL. The ID field cannot be left blank.  If the GUID string is changed after posting, the plugin will not be able to tell what has and has not been posted.', 'ppfm' );
-	$field_names_text = __( 'These refer to the databse field names that correspond to your podcasts', 'ppfm' );
+	$guid_text = __( 'As long as your podcasts are stored in a MySQL table with a primary key, they will all have a unique ID.  The Primary Key value will be appended to the GUID string.  If the custom string field is left blank, the Primary Key value will be appended to the site URL. The Primary Key field cannot be left blank.  If the GUID string is changed after posting, the plugin will not be able to tell what has and has not been posted.', 'ppfm' );
+	$field_names_text = __( 'These refer to the database field names that are used in the db table where your podcasts are stored', 'ppfm' );
 	$screen = get_current_screen();
 	if( $screen->id != $this->fields_page){
 		return;
@@ -241,9 +241,9 @@ function ppfm_fields_setup(){
 }
 
 function ppfm_db_setup(){
-	$host_text = __( 'This will most likely be "localhost", but this plugin does work with remote database connections.', 'ppfm' );
-	$port_text = __( 'On Unix anyway, if the host is set to localhost the connection is made through a socket, so this won\'t matter.  If your host is set to 127.0.0.1 this needs to be set to your correct port (default 3306)', 'ppfm' );
-	$db_name_text = __( 'This is the name of the database where your podcast information is stored.  It need not be the same as your WordPress database.', 'ppfm' );
+	$host_text = __( 'This will most likely be "localhost", but this plugin does work with remote database connections.  If left blank, it will default to "localhost".', 'ppfm' );
+	// $port_text = __( 'On Unix anyway, if the host is set to localhost the connection is made through a socket, so this won\'t matter.  If your host is set to 127.0.0.1 this needs to be set to your correct port (default 3306)', 'ppfm' );
+	$db_name_text = __( 'This is the name of the database where your podcast information is stored.  It may or may not be the same as your WordPress database.', 'ppfm' );
 	$db_user_text = __( 'This refers to the login credentials for the database where your podcast information is stored.  They may or may not be the same as your WordPress login.', 'ppfm' );
 	$db_table_text = __( 'This is the name of the database table where your podcast information is stored.  It should not be one of your WordPress tables.', 'ppfm' );
 	
@@ -257,11 +257,11 @@ function ppfm_db_setup(){
 		'title' => __('Database Host', 'ppfm'),
 		'content' => "<p>$host_text</p>"
 		));
-	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_Port',
-		'title' => __('Database Port', 'ppfm'),
-		'content' => "<p>$port_text</p>"
-		));
+	// $screen->add_help_tab( array(
+	// 	'id' => 'ppfm_db_Port',
+	// 	'title' => __('Database Port', 'ppfm'),
+	// 	'content' => "<p>$port_text</p>"
+	// 	));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_name',
 		'title' => __('Database Name', 'ppfm'),
@@ -436,7 +436,7 @@ function ppfm_plugin_db_description(){
 }
 function ppfm_plugin_guid_description(){
 	echo '<p>';
-	_e( 'Enter a Enter a custom GUID string ( optional )', 'ppfm' );
+	_e( 'Enter a custom GUID string ( optional - see contextual help above. )', 'ppfm' );
 	echo '</p>';
 }
 
