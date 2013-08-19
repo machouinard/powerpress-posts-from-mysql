@@ -74,7 +74,7 @@ class ppfmPlugin{
 		);
 		add_screen_option( $option, $args );
 		// $this->podcasts = LocalPodcast::get_podcasts();
-		$this->table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
+		$this->table = new PPFM_List_Table();
 
 	}
 

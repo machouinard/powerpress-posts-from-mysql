@@ -379,8 +379,8 @@ class PPFM_List_Table extends WP_List_Table {
          * 3 other arrays. One for all columns, one for hidden columns, and one
          * for sortable columns.
          */
-        $this->_column_headers = array($columns, $hidden, $sortable);
-        
+        // $this->_column_headers = array($columns, $hidden, $sortable);
+        $this->_column_headers = $this->get_column_info(); 
         
         /**
          * Optional. You can handle your bulk actions however you see fit. In this
