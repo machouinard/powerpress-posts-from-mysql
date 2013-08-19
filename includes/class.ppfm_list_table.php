@@ -204,7 +204,9 @@ class PPFM_List_Table extends WP_List_Table {
 
     //Detect when a bulk action is being triggered...
         if( 'create_rollover' == $this->current_action() ) {
-    // print_r($_GET);die('list_table 206');
+            // echo '<pre>';
+            // print_r($_GET);
+            // echo '</pre>';die(' list_table 209');
             wp_verify_nonce( 'ppfm_nonce_url_check' );
             $id = $_GET[ 'podcast' ];
             $podcast = new Podcast( $id );
@@ -236,7 +238,12 @@ class PPFM_List_Table extends WP_List_Table {
             if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
     // YES - what's the status?
                 $status = get_post_status( $postID );
-                if ( $status == 'publish' ) {
+                if ( $status == 'draft' ) {
+                    // wp_die('240 ppfm_list: ' . $status);
+                    if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
+                        wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
+                    }
+                } else {
                     if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
                         wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
                     }
@@ -251,14 +258,16 @@ class PPFM_List_Table extends WP_List_Table {
 
         if( 'remove_rollover' == $this->current_action() ) {
             wp_verify_nonce( 'ppfm_nonce_url_check' );
-            $podcast = new Podcast($_GET [ 'podcast' ] );
+            $id = $_GET['podcast'];
+            
     // Does GUID exist?
-            if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ) {
-                $result = $podcast->remove();
-                if( is_wp_error( $result )){
-                    wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
-                } 
-            }
+                if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ) {
+                    $podcast = new Podcast($id );
+                    $result = $podcast->remove();
+                    if( is_wp_error( $result )){
+                        wp_die( $result->get_error_message(), __( 'Deletion Error', 'ppfm' ) );
+                    } 
+                }
         }
 
         if ( 'create' == $this->current_action()){
@@ -297,7 +306,7 @@ class PPFM_List_Table extends WP_List_Table {
                 if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
     // YES - what's the status?
                     $status = get_post_status( $postID );
-                    if ( $status == 'publish' ) {
+                    if ( !($status == 'draft' ) ){
                         if( is_wp_error (Podcast::update_podcast_status( $postID, 'draft' ))) {
                             wp_die( $result->get_error_message(), __( 'Status Update Error', 'ppfm' ) );
                         }
