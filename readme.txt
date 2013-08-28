@@ -3,7 +3,7 @@ Contributors: machouinard
 Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
-Tested up to: 3.4.1
+Tested up to: 3.6
 Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,7 +34,7 @@ Also field names from the database which will be used for the following:
 * Media type
 * Date posted
 
-
+<strong>Note:</strong> I'm in the process of rewriting this from the ground up.  I figured while I'm at it, I might as well learn to use Git and GitHub.  You can find the repo at [https://github.com/machouinard/ppfm](https://github.com/machouinard/ppfm "PowerPress Posts From MySQL").
 
 == Installation ==
 
@@ -67,6 +67,10 @@ The POT file is included in the plugin's languages directory. Feel free to use t
 
 I'll do my best.  Post a message at <http://plugins.markchouinard.me/powerpress-plugin/> explaining what's up and I'll get to work making it right.
 
+= I think something's not right.  Can I fix it myself? =
+
+By all means, have at it!  I decided to learn to use Git, so all the development is being done at GitHub.  You can find the repo at [https://github.com/machouinard/ppfm](https://github.com/machouinard/ppfm "PowerPress Posts From MySQL").  Latest version is 0.9.8
+
 = I think something's missing.  You missed something essential. =
 
 Again, post a message at <http://plugins.markchouinard.me/powerpress-plugin/> explaining what you would like to be added and I'll get right on that, Rose.
@@ -88,6 +92,12 @@ The range used to select the records is also displayed.
 8. The 21 records previously published (340 - 360) have been skipped while the 15 new records (325 - 339) have been succesfully posted.
 
 == Changelog ==
+v 0.9.8
+
+* Rewritten from the ground up
+* Learned a lot about WordPress
+* Learned a lot about Git, too.
+
 v 0.9.4
 
 * Added check to ensure BluBrry PowerPress is installed and activated
@@ -115,11 +125,6 @@ v 0.9.1
 * Added ability to post from a range of records in the table based on a specific database field.
 * Added display of total records in table.
 
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
 
 == A brief Markdown Example ==
 
@@ -135,13 +140,5 @@ Unordered list:
 * something else
 * third thing
 
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
 
 `<?php code(); // goes in backticks ?>`

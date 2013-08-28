@@ -58,6 +58,27 @@ class Podcast {
 		return $this->_publish_post( );
 	}
 
+	public static function update_podcast_status( $id, $status ) {
+		// echo '$id: '. $id . '<br />';
+		// echo '$status: ' . $status . '<br />63 class.podcast';die();
+		if ( $status == 'draft' ){
+				$post = array(
+					'ID' => $id,
+					'post_status' => 'draft',
+					'edit_date' => true
+				);
+			} else {
+				$post = array(
+					'ID' => $id,
+					'post_status' => 'publish',
+					'edit_date' => true
+				);
+			}
+			if ( !wp_update_post( $post )){
+				$return = new WP_Error( 'wp_update_post_failure', __('wp_update_podcast_status() failed.', 'ppfm' ) );
+			}
+	}
+
 	public function publish_draft(){
 		// can we find a record with this guid?
 		if ( $id = LocalPodcast::guid_exists( $this->guid_string ) ){
@@ -66,17 +87,19 @@ class Podcast {
 			if ( $status == 'publish' ){
 				$post = array(
 					'ID' => $id,
-					'post_status' => 'draft'
+					'post_status' => 'draft',
+					'edit_date' => true
 				);
 			} else {
 				$post = array(
 					'ID' => $id,
-					'post_status' => 'publish'
+					'post_status' => 'publish',
+					'edit_date' => true
 				);
 			}
 			
 			if ( !wp_update_post( $post )){
-				$return = new WP_Error( 'wp_update_post_failure', __('wp_update_post() failed.', 'ppfm' ) );
+				$return = new WP_Error( 'wp_update_post_failure', __('publish_draft() failed.', 'ppfm' ) );
 			}
 		} else {
 			return $this->_publish_post( 'draft' );

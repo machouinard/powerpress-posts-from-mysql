@@ -10,18 +10,15 @@ class LocalPodcast {
 	
 
 	private function __construct( ){
-		require_once plugin_dir_path( __FILE__ ) . 'ez_sql_core.php';
-		require_once plugin_dir_path( __FILE__ ) . 'ez_sql_pdo.php';
 		self::$db_options = get_option( 'ppfm_db_options');
 		self::$field_options = get_option('ppfm_field_options');
 		self::$table = self::$db_options[ 'db_table' ];
 		$pass = self::$db_options[ 'db_password' ];
 		$user = self::$db_options[ 'db_user' ];
-		$host = self::$db_options[ 'db_host' ];
+		$host = empty( self::$db_options[ 'db_host' ] ) ? 'localhost' : self::$db_options[ 'db_host' ];
 		$name = self::$db_options[ 'db_name' ];
-		$dsn = "mysql:host=$host;dbname=$name";
-		if ( !empty( $pass) && !empty( $user ) && !empty( $name ) && !empty( $host )){
-			self::$dbh = new ezSQL_pdo( $dsn, $user, $pass );
+		if ( !empty( $pass) && !empty( $user ) && !empty( $name )){
+			self::$dbh = new wpdb( $user, $pass, $name, $host );
 		}
 		
 	}
@@ -40,13 +37,21 @@ class LocalPodcast {
 		return TRUE;
 	}
 
-	static function get_podcasts( ) {
+	static function get_podcasts( $search=null ) {
+		// print_r(self::$field_options);die(' 41 local_podcast');
+		$title_col = self::$field_options['post_title'];
+		$url_col = self::$field_options['post_url'];
 		$table = self::$table;
-		$podcasts = self::$dbh->get_results( "SELECT * FROM $table", ARRAY_A );
+		if ( $search == null){
+			$podcasts = self::$dbh->get_results( "SELECT * FROM $table", ARRAY_A );
+		} else {
+			$podcasts = self::$dbh->get_results( "SELECT * FROM $table WHERE `$title_col` LIKE '%{$search}%'", ARRAY_A);
+		}
+		
 		if ( $podcasts ){
 			return $podcasts;
 		}
-		return "No Podcasts Found!";
+		return array();
 	}
 
 	static function count_podcasts( ) {
