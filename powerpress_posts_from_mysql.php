@@ -187,6 +187,7 @@ class ppfmPlugin{
 			return;
 		}
 
+<<<<<<< HEAD
 	if ( count( LocalPodcast::$field_options ) < 10 ){
 		$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
 		echo '<h2>' . $h2 . '</h2>';
@@ -206,6 +207,8 @@ class ppfmPlugin{
 	<div id="icon-users" class="icon32"><br /></div>
 	<h2><?php echo $h2; ?></h2>
 	<?php
+=======
+>>>>>>> c5447d20c428224966d247a55a08ddd5636b8fa9
 		settings_errors( );
 
 		if( isset($_POST['s']) ){
@@ -250,13 +253,13 @@ function ppfm_fields_setup(){
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_fields',
 		'title' => __('Field Names', 'ppfm'),
-		'content' => "<p>$field_names_text</p>";
-	));
+		'content' => "<p>$field_names_text</p>"
+		));
 	$screen->add_help_tab( array(
 		'id' => 'ppfm_db_guid',
 		'title' => __('GUID / Primary Key', 'ppfm'),
 		'content' => "<p>$guid_text</p>"
-	));
+		));
 }
 
 function ppfm_db_setup(){
@@ -295,7 +298,7 @@ function ppfm_db_setup(){
 		'id' => 'ppfm_db_table',
 		'title' => __('Database Table', 'ppfm'),
 		'content' => "<p>$db_table_text</p>"
-	));
+		));
 	
 }
 
