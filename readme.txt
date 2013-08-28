@@ -3,7 +3,7 @@ Contributors: machouinard
 Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
-Tested up to: 3.4.1
+Tested up to: 3.6
 Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -34,7 +34,7 @@ Also field names from the database which will be used for the following:
 * Media type
 * Date posted
 
-
+<strong>Note:</strong> I'm in the process of rewriting this from the ground up.  I figured while I'm at it, I might as well learn to use Git and GitHub.  You can find the repo at [https://github.com/machouinard/ppfm](https://github.com/machouinard/ppfm "PowerPress Posts From MySQL").
 
 == Installation ==
 
@@ -66,6 +66,10 @@ The POT file is included in the plugin's languages directory. Feel free to use t
 = I think something's not right.  Can you fix it? =
 
 I'll do my best.  Post a message at <http://plugins.markchouinard.me/powerpress-plugin/> explaining what's up and I'll get to work making it right.
+
+= I think something's not right.  Can I fix it myself? =
+
+By all means, have at it!  I decided to learn to use Git, so all the development is being done at GitHub.  You can find the repo at [https://github.com/machouinard/ppfm](https://github.com/machouinard/ppfm "PowerPress Posts From MySQL").  Latest version is 0.9.8
 
 = I think something's missing.  You missed something essential. =
 
