@@ -3,7 +3,7 @@
  * Plugin Name: PowerPress Posts From MySQL
  * Plugin URI:  http://plugins.markchouinard.me
  * Description: Create PowerPress posts from data stored in a MySQL table
- * Version:     0.9.8 
+ * Version:     0.9.8
  * Author:      Mark Chouinard
  * Author URI:  http://markchouinard.me
  * License:     GPLv2+
@@ -43,7 +43,7 @@ class ppfmPlugin{
 	protected $fields_page;
 	protected $podcasts;
 	protected $table;
-	
+
 	public function __construct(){
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
 		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm_list_table.php';
@@ -58,8 +58,8 @@ class ppfmPlugin{
 
 
 	public function ppfm_add_page(){
-		$this->menu_page = add_menu_page( __('PowerPress posts from MySQL', 'ppfm'), __('PowerPress from MySQL', 'ppfm'), 'manage_options', 'ppfm_plugin', array($this, 'ppfm_podcasts_page') );
-		$this->db_page = add_submenu_page( 'ppfm_plugin', __('MySQL Connection', 'ppfm'), __('MySQL Connection', 'ppfm'), 'manage_options', 'ppfm_plugin_db_connect', array($this, 'ppfm_plugin_db_connect_page') );
+		$this->menu_page   = add_menu_page( __('PowerPress posts from MySQL', 'ppfm'), __('PowerPress from MySQL', 'ppfm'), 'manage_options', 'ppfm_plugin', array($this, 'ppfm_podcasts_page') );
+		$this->db_page     = add_submenu_page( 'ppfm_plugin', __('MySQL Connection', 'ppfm'), __('MySQL Connection', 'ppfm'), 'manage_options', 'ppfm_plugin_db_connect', array($this, 'ppfm_plugin_db_connect_page') );
 		$this->fields_page = add_submenu_page( 'ppfm_plugin', __('MySQL Fields', 'ppfm'), __('MySQL Fields', 'ppfm'), 'manage_options', 'ppfm_plugin_db_fields', array($this, 'ppfm_plugin_db_fields_page') );
 		add_action('load-' . $this->db_page, array($this, 'ppfm_db_setup') );
 		add_action('load-'.$this->fields_page, array( $this, 'ppfm_fields_setup') );
@@ -69,11 +69,11 @@ class ppfmPlugin{
 
 	function ppfm_screen_options() {
 		$option = 'per_page';
-		$args = array( 
-			'label' => 'Podcasts',
+		$args = array(
+			'label'   => 'Podcasts',
 			'default' => 5,
-			'option' => 'podcasts_per_page'
-		);
+			'option'  => 'podcasts_per_page'
+			);
 		add_screen_option( $option, $args );
 		// $this->podcasts = LocalPodcast::get_podcasts();
 		$this->table = new PPFM_List_Table();
@@ -99,7 +99,7 @@ class ppfmPlugin{
 
 	// function ppfm_plugin_enqueue_styles() {
 	// the latest incarnation of wp_register_style.  I'm done mucking about with this.
-	// 	wp_register_style( 'ppfm_wp_admin_css', plugins_url('assets/css/ppfm-style.css', __FILE__) ); 
+	// 	wp_register_style( 'ppfm_wp_admin_css', plugins_url('assets/css/ppfm-style.css', __FILE__) );
  //        wp_enqueue_style( 'ppfm_wp_admin_css' );
 	// }
 
@@ -126,8 +126,8 @@ class ppfmPlugin{
 			<?php
 			if ( count( LocalPodcast::$db_options ) <5 ) {
 				$h2 = __('Please fill in or verify your database connection details', 'ppfm');
-				echo '<h2> ' . $h2 . '</h2>';
-				echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
+				echo '<h2>' .  $h2 . '</h2>';
+				echo '<a href="' . admin_url( "admin.php?page=ppfm_plugin_db_connect") . '" >MySQL Connection page</a>';
 				return;
 			}
 			?>
@@ -150,14 +150,6 @@ class ppfmPlugin{
 		}
 		echo '<div class="wrap">';
 
-// echo '<pre>';
-// print_r( LocalPodcast::$db_options );
-// echo '</pre>';
-// die( 'ppfm 107' );
-
-// if ( LocalPodcast::$dbh ){
-// 	echo 'yes';die('ppfm 118');
-// }
 
 		if( !defined ( 'POWERPRESS_VERSION' )){
 			$h2 = __( 'This plugin requires the Blubrry PowerPress plugin.  Please install or Activate it now', 'ppfm' );
@@ -166,57 +158,33 @@ class ppfmPlugin{
 			return;
 		}
 
-	// if ( !LocalPodcast::$dbh ){
-	// 	$h2 = __('Please fill in or verify your database connection details', 'ppfm');
-	// 	echo '<h2> ' . $h2 . '</h2>';
-	// 	echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
-	// 	return;
-	// }
 
 		if ( !LocalPodcast::$dbh || empty( LocalPodcast::$db_options[ 'db_table' ] ) || !LocalPodcast::does_table_exist( LocalPodcast::$db_options[ 'db_table' ] ) ) {
 			$h2 = __('Please fill in or verify your database connection details', 'ppfm');
 			echo '<h2> ' . $h2 . '</h2>';
-			echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_connect" >MySQL Connection page</a>';
+			echo '<a href="' . admin_url( "admin.php?page=ppfm_plugin_db_connect") . '" >MySQL Connection page</a>';
 			return;
 		}
 
 		if ( count( LocalPodcast::$field_options ) < 10 ){
 			$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
 			echo '<h2>' . $h2 . '</h2>';
-			echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_fields" >MySQL Fields Page</a>';
+			echo '<a href="' . admin_url( "admin.php?page=ppfm_plugin_db_fields") . '" >MySQL Fields Page</a>';
 			return;
 		}
 
-<<<<<<< HEAD
-	if ( count( LocalPodcast::$field_options ) < 10 ){
-		$h2 = __( 'Please fill in or verify your database field details', 'ppfm' );
-		echo '<h2>' . $h2 . '</h2>';
-		echo '<a href="/wp-admin/admin.php?page=ppfm_plugin_db_fields" >MySQL Fields Page</a>';
-		return;
-	}
-	
-	settings_errors( );
 
-	$this->podcasts = LocalPodcast::get_podcasts();
-	$table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
-	$table->prepare_items();
-	$count = LocalPodcast::count_podcasts();
-	$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
-	?>
-	<!-- <div class="wrap"> -->
-	<div id="icon-users" class="icon32"><br /></div>
-	<h2><?php echo $h2; ?></h2>
-	<?php
-=======
->>>>>>> c5447d20c428224966d247a55a08ddd5636b8fa9
+		$this->podcasts = LocalPodcast::get_podcasts();
+		$table = new PPFM_List_Table($this->podcasts, LocalPodcast::$field_options);
+
 		settings_errors( );
 
 		if( isset($_POST['s']) ){
 			$this->table->prepare_items($_POST['s']);
 		} else {
 			$this->table->prepare_items();
-}
-		
+		}
+
 		$count = LocalPodcast::count_podcasts();
 		$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
 		?>
@@ -226,11 +194,11 @@ class ppfmPlugin{
 
 		<!-- SEARCH ATTEMPT 1 -->
 		<form method="post">
-		<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-		<?php $this->table->search_box('Search Podcasts', 'ppfm'); ?>
+			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+			<?php $this->table->search_box('Search Podcasts', 'ppfm'); ?>
 		</form>
 		<?php
-		
+
 
 		?>
 		<form id="podcasts-filter" action='options.php' method="get">
@@ -251,32 +219,32 @@ function ppfm_fields_setup(){
 		return;
 	}
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_fields',
-		'title' => __('Field Names', 'ppfm'),
+		'id'      => 'ppfm_db_fields',
+		'title'   => __('Field Names', 'ppfm'),
 		'content' => "<p>$field_names_text</p>"
 		));
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_guid',
-		'title' => __('GUID / Primary Key', 'ppfm'),
+		'id'      => 'ppfm_db_guid',
+		'title'   => __('GUID / Primary Key', 'ppfm'),
 		'content' => "<p>$guid_text</p>"
 		));
 }
 
 function ppfm_db_setup(){
-	$host_text = __( 'This will most likely be "localhost", but this plugin does work with remote database connections.  If left blank, it will default to "localhost".', 'ppfm' );
-	// $port_text = __( 'On Unix anyway, if the host is set to localhost the connection is made through a socket, so this won\'t matter.  If your host is set to 127.0.0.1 this needs to be set to your correct port (default 3306)', 'ppfm' );
-	$db_name_text = __( 'This is the name of the database where your podcast information is stored.  It may or may not be the same as your WordPress database.', 'ppfm' );
-	$db_user_text = __( 'This refers to the login credentials for the database where your podcast information is stored.  They may or may not be the same as your WordPress login.', 'ppfm' );
+	$host_text     = __( 'This will most likely be "localhost", but this plugin does work with remote database connections.  If left blank, it will default to "localhost".', 'ppfm' );
+	// $port_text  = __( 'On Unix anyway, if the host is set to localhost the connection is made through a socket, so this won\'t matter.  If your host is set to 127.0.0.1 this needs to be set to your correct port (default 3306)', 'ppfm' );
+	$db_name_text  = __( 'This is the name of the database where your podcast information is stored.  It may or may not be the same as your WordPress database.', 'ppfm' );
+	$db_user_text  = __( 'This refers to the login credentials for the database where your podcast information is stored.  They may or may not be the same as your WordPress login.', 'ppfm' );
 	$db_table_text = __( 'This is the name of the database table where your podcast information is stored.  It should not be one of your WordPress tables.', 'ppfm' );
-	
 
-	$screen = get_current_screen();
+
+	$screen        = get_current_screen();
 	if ( $screen->id != $this->db_page ){
 		return;
 	}
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_host',
-		'title' => __('Database Host', 'ppfm'),
+		'id'      => 'ppfm_db_host',
+		'title'   => __('Database Host', 'ppfm'),
 		'content' => "<p>$host_text</p>"
 		));
 	// $screen->add_help_tab( array(
@@ -285,21 +253,21 @@ function ppfm_db_setup(){
 	// 	'content' => "<p>$port_text</p>"
 	// 	));
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_name',
-		'title' => __('Database Name', 'ppfm'),
+		'id'      => 'ppfm_db_name',
+		'title'   => __('Database Name', 'ppfm'),
 		'content' => "<p>$db_name_text</p>"
 		));
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_user',
-		'title' => __('User & Password', 'ppfm'),
+		'id'      => 'ppfm_db_user',
+		'title'   => __('User & Password', 'ppfm'),
 		'content' => "<p>$db_user_text</p>"
 		));
 	$screen->add_help_tab( array(
-		'id' => 'ppfm_db_table',
-		'title' => __('Database Table', 'ppfm'),
+		'id'      => 'ppfm_db_table',
+		'title'   => __('Database Table', 'ppfm'),
 		'content' => "<p>$db_table_text</p>"
 		));
-	
+
 }
 
 
@@ -399,7 +367,7 @@ function ppfm_plugin_admin_init(){
 		'ppfm_db_options',
 		'ppfm_db_options'
 		// array( $this, 'ppfm_plugin_db_validate')
-		);	
+		);
 	add_settings_section(
 		'ppfm_plugin_db',
 		__( 'Database Connection Settings', 'ppfm'),
@@ -448,7 +416,7 @@ function ppfm_plugin_admin_init(){
 		'ppfm_plugin',
 		'ppfm_plugin_db'
 		);
-	
+
 }
 
 function ppfm_plugin_db_description(){
@@ -527,7 +495,7 @@ function ppfm_plugin_db_host_input(){
 		$db_host = LocalPodcast::$db_options['db_host'];
 	} else {
 		$db_host = "";
-	}	
+	}
 	echo "<input id='db_host' name='ppfm_db_options[db_host]' type='text' value='$db_host' />";
 }
 // function ppfm_plugin_db_port_input(){
@@ -591,7 +559,7 @@ function ppfm_plugin_post_title_input(){
 		$post_title = LocalPodcast::$field_options['post_title'];
 	} else {
 		$post_title = '';
-	}	
+	}
 	echo "<input id='post_title' name='ppfm_field_options[post_title]' type='text' value='$post_title' />";
 }
 function ppfm_plugin_post_category_input(){

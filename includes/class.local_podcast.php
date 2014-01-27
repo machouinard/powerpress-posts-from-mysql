@@ -7,12 +7,12 @@ class LocalPodcast {
 	static $field_options;
 	static $table;
 	static $dbh;
-	
+
 
 	private function __construct( ){
-		self::$db_options = get_option( 'ppfm_db_options');
+		self::$db_options    = get_option( 'ppfm_db_options');
 		self::$field_options = get_option('ppfm_field_options');
-		self::$table = self::$db_options[ 'db_table' ];
+		self::$table         = self::$db_options[ 'db_table' ];
 		$pass = self::$db_options[ 'db_password' ];
 		$user = self::$db_options[ 'db_user' ];
 		$host = empty( self::$db_options[ 'db_host' ] ) ? 'localhost' : self::$db_options[ 'db_host' ];
@@ -20,7 +20,7 @@ class LocalPodcast {
 		if ( !empty( $pass) && !empty( $user ) && !empty( $name )){
 			self::$dbh = new wpdb( $user, $pass, $name, $host );
 		}
-		
+
 	}
 
 	static function get_instance( ){
@@ -40,14 +40,14 @@ class LocalPodcast {
 	static function get_podcasts( $search=null ) {
 		// print_r(self::$field_options);die(' 41 local_podcast');
 		$title_col = self::$field_options['post_title'];
-		$url_col = self::$field_options['post_url'];
-		$table = self::$table;
+		$url_col   = self::$field_options['post_url'];
+		$table     = self::$table;
 		if ( $search == null){
 			$podcasts = self::$dbh->get_results( "SELECT * FROM $table", ARRAY_A );
 		} else {
 			$podcasts = self::$dbh->get_results( "SELECT * FROM $table WHERE `$title_col` LIKE '%{$search}%'", ARRAY_A);
 		}
-		
+
 		if ( $podcasts ){
 			return $podcasts;
 		}
@@ -65,8 +65,8 @@ class LocalPodcast {
 
 
 	static function find_podcast_by_id( $id ) {
-		$table = self::$table;
-		$sql = "SELECT * FROM $table WHERE id = $id";
+		$table   = self::$table;
+		$sql     = "SELECT * FROM $table WHERE id = $id";
 		// echo $sql;die('local.podcast 64');
 		$podcast = self::$dbh->get_row( $sql , ARRAY_A );
 		if ( $podcast ) {
@@ -82,7 +82,7 @@ class LocalPodcast {
 	static function guid_exists( $guid ) {
 		global $wpdb;
 		$table = $wpdb->prefix . "posts";
-		$id = $wpdb->get_var( "SELECT id FROM $table WHERE guid = '$guid' " );
+		$id    = $wpdb->get_var( "SELECT id FROM $table WHERE guid = '$guid' " );
 		if ( ! $id ){
 			return FALSE;
 		}
@@ -107,7 +107,7 @@ class LocalPodcast {
 		$table = $wpdb->prefix . 'posts';
 		// echo 'table: ' . $table;die( 'local_podcast 102' );
 		// echo '<br />guid: ' . $guid;//die(' local_podcast 103' );
-		$ID = $wpdb->get_var( "SELECT ID FROM $table WHERE guid = '$guid'" );
+		$ID    = $wpdb->get_var( "SELECT ID FROM $table WHERE guid = '$guid'" );
 		// echo '<br />$ID: ' . $ID;die( 'local_podcast 104' );
 		return $ID;
 	}
@@ -115,18 +115,18 @@ class LocalPodcast {
 	static function does_field_exist($field){
 		self::$dbh->hide_errors();
 		$table = self::$table;
-		$col = self::$dbh->get_col( "SELECT $field FROM ppfm" );
+		$col   = self::$dbh->get_col( "SELECT $field FROM ppfm" );
 		self::$dbh->show_errors();
 		if ( !empty( $col) ) {
 			return TRUE;
 		}
 		return FALSE;
-		
+
         }
 
     static function does_table_exist( $table ){
         if ( self::$dbh ){
-		$sql = ("SHOW TABLES LIKE '$table'");
+		$sql    = ("SHOW TABLES LIKE '$table'");
 		$result = self::$dbh->get_var( $sql );
 		if ( $result == $table ){
 			return TRUE;
@@ -138,7 +138,7 @@ class LocalPodcast {
 
 
 
-    	
+
 
 }
 
