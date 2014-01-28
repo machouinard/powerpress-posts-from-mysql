@@ -1,6 +1,6 @@
 === PowerPress Posts From MySQL ===
 Contributors: machouinard
-Donate link: http://markchouinard.com
+Donate link: http://machouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
 Tested up to: 3.8.1
@@ -8,7 +8,7 @@ Stable tag: 0.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Have a bunch of podcasts stored on your server and aren't excited about creating each post manually? This will help.
+Have a bunch of podcasts stored on your server and aren't excited about creating each post manually? This can help.
 
 == Description ==
 
@@ -62,7 +62,7 @@ This section describes how to install the plugin and get it working.
 
 = I think something's not right.  Can I fix it myself? =
 
-By all means, have at it!  I decided to learn to use Git, so all the code is available at GitHub.  You can find the repo at [https://github.com/machouinard/powerpress-posts-from-mysql](https://github.com/machouinard/powerpress-posts-from-mysql "PowerPress Posts From MySQL").  Latest version is 0.9.8
+By all means, have at it!  I decided to learn to use Git, so all the code is available at GitHub.  You can find the repo at [https://github.com/machouinard/powerpress-posts-from-mysql](https://github.com/machouinard/powerpress-posts-from-mysql "PowerPress Posts From MySQL").
 
 = I think something's missing.  You botched something essential. =
 
