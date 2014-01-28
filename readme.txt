@@ -74,11 +74,6 @@ Post the issue at the project's [GitHub page](https://github.com/machouinard/pow
 No, but it helps.  You will need to make sure you have remote access to the MySQL database if it's on a different host.  I have a site on DreamHost using a database on HostGator and it works great.
 
 
-== Screenshots ==
-
-Coming Soon
-
-
 == Changelog ==
 
 v 0.9.9
