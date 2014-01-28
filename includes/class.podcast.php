@@ -12,7 +12,7 @@ class Podcast {
 	private $post_date;
 	private $error;
 	private $guid_string;
-	
+
 	function __construct( $id ){
 		// echo 'id: '.$id;die( 'class.podcast 17');
 		// require_once plugin_dir_path( __FILE__ ) . 'ez_sql_core.php';
@@ -23,7 +23,7 @@ class Podcast {
 		// print_r($podcast);
 		// echo '</pre>';
 		// die('class.podcast 25');
-		$this->post_image_location = $podcast['image_location'];
+		$this->post_image_location = $podcast[LocalPodcast::$field_options['post_image']];
 		$this->db_id = $id;
 		$this->post_title = $podcast[LocalPodcast::$field_options['post_title']];
 		$this->post_category = $podcast[LocalPodcast::$field_options['post_category']];
@@ -34,7 +34,7 @@ class Podcast {
 		$this->post_type = $podcast[LocalPodcast::$field_options['post_type']];
 		$this->post_date = $podcast[LocalPodcast::$field_options['post_date']];
 		$this->guid_string = LocalPodcast::create_guid( $id );
-		
+
 	}
 
 	function details(){
@@ -49,8 +49,8 @@ class Podcast {
 			'post_type' => $this->post_type,
 			'post_date' => $this->post_date,
 			'guid' => $this->guid_string
-		);
-		
+			);
+
 	}
 
 
@@ -62,21 +62,21 @@ class Podcast {
 		// echo '$id: '. $id . '<br />';
 		// echo '$status: ' . $status . '<br />63 class.podcast';die();
 		if ( $status == 'draft' ){
-				$post = array(
-					'ID' => $id,
-					'post_status' => 'draft',
-					'edit_date' => true
+			$post = array(
+				'ID' => $id,
+				'post_status' => 'draft',
+				'edit_date' => true
 				);
-			} else {
-				$post = array(
-					'ID' => $id,
-					'post_status' => 'publish',
-					'edit_date' => true
+		} else {
+			$post = array(
+				'ID' => $id,
+				'post_status' => 'publish',
+				'edit_date' => true
 				);
-			}
-			if ( !wp_update_post( $post )){
-				$return = new WP_Error( 'wp_update_post_failure', __('wp_update_podcast_status() failed.', 'ppfm' ) );
-			}
+		}
+		if ( !wp_update_post( $post )){
+			$return = new WP_Error( 'wp_update_post_failure', __('wp_update_podcast_status() failed.', 'ppfm' ) );
+		}
 	}
 
 	public function publish_draft(){
@@ -89,15 +89,15 @@ class Podcast {
 					'ID' => $id,
 					'post_status' => 'draft',
 					'edit_date' => true
-				);
+					);
 			} else {
 				$post = array(
 					'ID' => $id,
 					'post_status' => 'publish',
 					'edit_date' => true
-				);
+					);
 			}
-			
+
 			if ( !wp_update_post( $post )){
 				$return = new WP_Error( 'wp_update_post_failure', __('publish_draft() failed.', 'ppfm' ) );
 			}
@@ -111,15 +111,15 @@ class Podcast {
 		// here we need to remove the post, its related image(s) and anything else that was created
 		// echo 'guid: ' . $this->guid_string;die( 'class.podcast 89' );
 		$ID = LocalPodcast::find_wp_id_by_guid( $this->guid_string );
-		
+
 		$args = array(
-		'numberposts' => -1,
-		'order' => 'ASC',
-		'post_mime_type' => 'image',
-		'post_parent' => $ID,
-		'post_status' => null,
-		'post_type' => 'attachment',
-	);
+			'numberposts' => -1,
+			'order' => 'ASC',
+			'post_mime_type' => 'image',
+			'post_parent' => $ID,
+			'post_status' => null,
+			'post_type' => 'attachment',
+			);
 		$children = get_children( $args );
 		foreach( $children as $child ) {
 			$child_ID = $child->ID;
@@ -150,44 +150,50 @@ class Podcast {
 			'post_type' => 'post',
 			'post_status' => $status,
 			'guid' => $this->guid_string
-		);
+			);
 // echo '<pre>';
-// print_r( $post );		
+// print_r( $post );
 // echo '</pre>';
 // die('class.podcast 131');
 		// If post is successfully inserted, the new post_id will be returned
 		// and we can use that to handle the image and the podcast
 		if ( $post_id = wp_insert_post($post)){
-			
-			$type = exif_imagetype($this->post_image_location);
-			$type = image_type_to_mime_type( $type );
 
-			$temp_image = file_get_contents( $this->post_image_location );
-			// here we trick media_handle_sideload into thinking it is working with an upload file in the
-			// form of $_FILE
-			$img_array = array(
-				'name' => basename( $this->post_image_location ),
-				'type' => $type,
-				'tmp_name' => $this->post_image_location,
-				'error' => 0,
-				'size' => filesize( $this->post_image_location )
-			);
-// echo '<pre>';
-// print_r( $img_array);
-// echo '</pre>';
-// die('class.podcast 155');
-			// media_handle_sideload returns the id that we can use to set the featured image
-			$thumb_id = media_handle_sideload( $img_array, $post_id, $this->post_title );
+			$url = $this->post_image_location;
+			$tmp = download_url( $url );
+			$desc = $this->post_title;
+			$file = basename( $url );
+
+	// Set variables for storage
+	// fix file filename for query strings
+			preg_match('/[^\?]+\.(jpg|JPG|jpe|JPE|jpeg|JPEG|gif|GIF|png|PNG)/', $file, $matches);
+			$file_array['name'] = basename($matches[0]);
+			$file_array['tmp_name'] = $tmp;
+
+	// If error storing temporarily, unlink
+			if ( is_wp_error( $tmp ) ) {
+				@unlink($file_array['tmp_name']);
+				$file_array['tmp_name'] = '';
+			}
+
+	// do the validation and storage stuff
+			$thumb_id = media_handle_sideload( $file_array, $post_id, $desc );
+
+	// If error storing permanently, unlink
+			if ( is_wp_error($thumb_id) ) {
+				@unlink($file_array['tmp_name']);
+				return $thumb_id;
+			}
+
 			if ( is_wp_error( $thumb_id ) ){
 				$return = new WP_Error( 'media_handle_sideload_failure', __('media_handle_sideload() failed.', 'ppfm' ) );
 			}
 			set_post_thumbnail( $post_id, $thumb_id );
-			file_put_contents( $this->post_image_location, $temp_image );
 
 			if( ! update_post_meta( $post_id, 'enclosure', $enclosure_value )){
 				$return = new WP_Error( 'update_post_meta_failure', __( 'update_post_meta() failed.', 'ppfm' ) );
 			}
-			
+
 		} else {
 			$error = new WP_Error('insert_post_failure', __( 'wp_insert_post() failed.', 'ppfm' ) );
 			return $error;

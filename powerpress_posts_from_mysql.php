@@ -3,7 +3,7 @@
  * Plugin Name: PowerPress Posts From MySQL
  * Plugin URI:  http://plugins.markchouinard.me
  * Description: Create PowerPress posts from data stored in a MySQL table
- * Version:     0.9.8
+ * Version:     0.9.9
  * Author:      Mark Chouinard
  * Author URI:  http://markchouinard.me
  * License:     GPLv2+
@@ -312,14 +312,14 @@ function ppfm_plugin_field_page_init(){
 		);
 	add_settings_field(
 		'ppfm_plugin_post_image',
-		__( 'Post image location field', 'ppfm'),
+		__( 'Post image URL field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_image_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'
 		);
 	add_settings_field(
 		'ppfm_plugin_post_url',
-		__( 'Podcast url field', 'ppfm'),
+		__( 'Podcast URL field', 'ppfm'),
 		array( $this, 'ppfm_plugin_post_url_input' ),
 		'ppfm_plugin_db_fields',
 		'ppfm_plugin_fields'

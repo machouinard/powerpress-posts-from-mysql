@@ -4,7 +4,7 @@ Donate link: http://markchouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
 Tested up to: 3.8.1
-Stable tag: 0.9.8
+Stable tag: 0.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Have a bunch of podcasts stored on your server and aren't excited about creating
 
 == Description ==
 
-By populating a MySQL database table with all the information about the podcasts you can automatically create the posts needed for podcasting with the [Blubrry PowerPress plugin](http://wordpress.org/extend/plugins/powerpress/ "WordPress Podcasting").
+By populating a MySQL database table with all the information about the podcasts you can automatically create the posts needed for podcasting with the [Blubrry PowerPress plugin](http://wordpress.org/extend/plugins/powerpress/ "WordPress Podcasting"). This will allow you to post as draft or published and switch between the two as well as delete posts.  Probably not useful to actual Podcasters, but it works for what I needed.
 
 Information required from the database:
 
@@ -34,6 +34,10 @@ Also field names from the database which will be used for the following:
 * Media type
 * Date posted
 
+Your categories need to be setup prior to using this.
+
+
+
 <strong>Note:</strong> I've rewritten this from the ground up and decided to learn Git while doing so.  You can find the repo at [https://github.com/machouinard/powerpress-posts-from-mysql](https://github.com/machouinard/powerpress-posts-from-mysql "PowerPress Posts From MySQL").
 
 == Installation ==
@@ -53,7 +57,7 @@ This section describes how to install the plugin and get it working.
 
 = How should I set up the database table? =
 
-* Create fields that correspond to those on the MySQL Fields page of the plugin ( Post Title, Post Category, Post Body, Post/Featured Image, Podcast URL, Podcast Size, Podcast Media Type, Post Date ).
+* Create fields that correspond to those on the MySQL Fields page of the plugin ( Post Title, Post Category, Post Body, Post/Featured Image URL, Podcast URL, Podcast Size, Podcast Media Type, Post Date ).
 * Make sure to include a primary key.
 
 = I think something's not right.  Can I fix it myself? =
@@ -67,24 +71,26 @@ Post the issue at the project's [GitHub page](https://github.com/machouinard/pow
 
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
-No, but it helps.  You will need to make sure you have remote access to the MySQL database if it's on a different host.
-
+No, but it helps.  You will need to make sure you have remote access to the MySQL database if it's on a different host.  I have a site on DreamHost using a database on HostGator and it works great.
 
 
 == Screenshots ==
 
+Coming Soon
 
 
 == Changelog ==
-v 0.9.8
 
+v 0.9.9
+* Changed the way media_handle_sideload was being used
+
+v 0.9.8
 * (note: Most of this work was done months ago.  I got busy and forgot about it)
 * Rewritten from the ground up
 * Learned a lot about WordPress
 * Learned a lot about Git, too.
 
 v 0.9.4
-
 * Added check to ensure BluBrry PowerPress is installed and activated
 * More CSS and HTML changes in an attempt to pretty this thing up a bit
 * Changed code to allow for localization
@@ -97,14 +103,12 @@ v 0.9.4
 * Turkish
 
 v 0.9.2
-
 * Included a Primary Key field in the settings page
 * Added ability to set the status of posts as either Published or Draft
 * Made some aesthetic changes to the settings page using some CSS and jQuery
 * Removed some unused code and comments from process.php
 
 v 0.9.1
-
 * Added database connectivity checking.
 * Added check to prevent posting same podcast twice based on the podcast/post title.
 * Added ability to post from a range of records in the table based on a specific database field.
