@@ -34,7 +34,7 @@ Also field names from the database which will be used for the following:
 * Media type
 * Date posted
 
-<strong>Note:</strong> I've rewritten this from the ground up and decided to learn Git while doing so.  You can find the repo at [https://github.com/machouinard/ppfm](https://github.com/machouinard/ppfm "PowerPress Posts From MySQL").
+<strong>Note:</strong> I've rewritten this from the ground up and decided to learn Git while doing so.  You can find the repo at [https://github.com/machouinard/powerpress-posts-from-mysql](https://github.com/machouinard/powerpress-posts-from-mysql "PowerPress Posts From MySQL").
 
 == Installation ==
 
@@ -64,9 +64,15 @@ By all means, have at it!  I decided to learn to use Git, so all the code is ava
 
 Post the issue at the project's [GitHub page](https://github.com/machouinard/powerpress-posts-from-mysql/issues?page=1&state=open "GitHub page").
 
+
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
 No.
+<<<<<<< HEAD
+=======
+
+== Screenshots ==
+>>>>>>> origin/master
 
 
 == Changelog ==
