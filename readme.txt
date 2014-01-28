@@ -64,9 +64,15 @@ By all means, have at it!  I decided to learn to use Git, so all the code is ava
 
 Post the issue at the project's [GitHub page](https://github.com/machouinard/powerpress-posts-from-mysql/issues?page=1&state=open "GitHub page").
 
+
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
 No.
+<<<<<<< HEAD
+=======
+
+== Screenshots ==
+>>>>>>> origin/master
 
 
 == Changelog ==
