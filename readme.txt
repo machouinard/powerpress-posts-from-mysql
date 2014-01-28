@@ -67,9 +67,9 @@ Post the issue at the project's [GitHub page](https://github.com/machouinard/pow
 
 = Does the MySQL table have to be on the same DB Host as my WordPress install? =
 
-No.
-<<<<<<< HEAD
-=======
+No, but it helps.  You will need to make sure you have remote access to the MySQL database if it's on a different host.
+
+
 
 == Screenshots ==
 >>>>>>> origin/master
