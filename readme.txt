@@ -72,7 +72,7 @@ No, but it helps.  You will need to make sure you have remote access to the MySQ
 
 
 == Screenshots ==
->>>>>>> origin/master
+
 
 
 == Changelog ==
