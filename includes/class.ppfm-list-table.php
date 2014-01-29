@@ -16,9 +16,8 @@ class PPFM_List_Table extends WP_List_Table {
     private $podcasts;
 
     function __construct(){
-        require_once plugin_dir_path( __FILE__ ) . 'class.local_podcast.php';
-        require_once plugin_dir_path(__FILE__) . 'class.podcast.php';
-        // $this->podcasts = LocalPodcast::get_podcasts();
+        require_once plugin_dir_path( __FILE__ ) . 'class.local-podcast.php';
+        require_once plugin_dir_path( __FILE__ ) . 'class.podcast.php';
         global $status, $page, $current_user;
 
         //Set parent defaults
@@ -46,11 +45,11 @@ class PPFM_List_Table extends WP_List_Table {
     function column_default($item, $column_name){
         switch($column_name){
         	case 'posted':
-          return null;
-          case 'title':
-          case 'url':
-          return $item[$column_name];
-          default:
+            return null;
+            case 'title':
+            case 'url':
+            return $item[$column_name];
+            default:
                 return print_r($item,true); //Show the whole array for troubleshooting purposes
             }
         }
@@ -73,10 +72,7 @@ class PPFM_List_Table extends WP_List_Table {
      * @return string Text to be placed inside the column <td> (podcast title only)
      **************************************************************************/
     function column_title($item){
-// echo '<pre>';
-// print_r($item);
-// echo '</pre>';
-// die( 'list_table 79');
+
         // Build actions
         $actions = self::build_actions( $item );
 
@@ -211,7 +207,6 @@ class PPFM_List_Table extends WP_List_Table {
                     if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
     // YES - what's the status?
                         $status = get_post_status( $postID );
-    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
     // Draft - update post status to publish
                         if ( $status == 'draft' ) {
                             if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
@@ -234,7 +229,6 @@ class PPFM_List_Table extends WP_List_Table {
                if( $postID = LocalPodcast::guid_exists_by_db_id( $id ) ){
     // YES - what's the status?
                 $status = get_post_status( $postID );
-    // echo '$status: ' . $status . '<br />251 ppfm_list_table';die();
     // Draft - update post status to publish
                 if ( $status == 'draft' ) {
                     if( is_wp_error (Podcast::update_podcast_status( $postID, 'publish' ))) {
@@ -392,7 +386,6 @@ class PPFM_List_Table extends WP_List_Table {
          */
         // $data = $this->podcasts;
         $data = LocalPodcast::get_podcasts($search);
-// print_r($data);wp_die(' 396 list_table');
 
         /**
          * This checks for sorting input and sorts the data in our array accordingly.
@@ -462,16 +455,13 @@ class PPFM_List_Table extends WP_List_Table {
 
     function usort_reorder($a,$b){
             $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
-            $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
-            $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
+            $order   = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
+            $result  = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
             return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
         }
 
     // Build actions array
         static function build_actions( $item ) {
-        // echo '<pre>';
-        // print_r($item);
-        // echo '</pre>';die('ppfm_list_table 447');
 
             $actions        = array();
             $draft          = sprintf('?page=%s&action=%s&podcast=%s',$_REQUEST['page'],'draft',$item[LocalPodcast::$field_options['primary_key']]);
@@ -488,7 +478,6 @@ class PPFM_List_Table extends WP_List_Table {
             $db_id = $item[ 'id' ];
         // build guid for this db_id
             $guid = LocalPodcast::create_guid( $db_id );
-        // echo $guid;die( 'list_taable 425');
         // does a post with this guid exist?
             if ( $post_id = LocalPodcast::guid_exists( $guid ) ){
             // if YES, what is the post status?
@@ -507,10 +496,7 @@ class PPFM_List_Table extends WP_List_Table {
                 $actions[ 'create' ] = $create_url;
                 $actions[ ' draft' ] = $draft_url;
             }
-       // echo '<pre>';
-       // print_r($actions['create']);
-       // echo '</pre>';
-       // die('list_table 454');
+
             return $actions;
         }
 
