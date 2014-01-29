@@ -77,15 +77,18 @@ No, but it helps.  You will need to make sure you have remote access to the MySQ
 == Changelog ==
 
 v 0.9.9
+
 * Changed the way media_handle_sideload was being used
 
 v 0.9.8
+
 * (note: Most of this work was done months ago.  I got busy and forgot about it)
 * Rewritten from the ground up
 * Learned a lot about WordPress
 * Learned a lot about Git, too.
 
 v 0.9.4
+
 * Added check to ensure BluBrry PowerPress is installed and activated
 * More CSS and HTML changes in an attempt to pretty this thing up a bit
 * Changed code to allow for localization
@@ -98,12 +101,14 @@ v 0.9.4
 * Turkish
 
 v 0.9.2
+
 * Included a Primary Key field in the settings page
 * Added ability to set the status of posts as either Published or Draft
 * Made some aesthetic changes to the settings page using some CSS and jQuery
 * Removed some unused code and comments from process.php
 
 v 0.9.1
+
 * Added database connectivity checking.
 * Added check to prevent posting same podcast twice based on the podcast/post title.
 * Added ability to post from a range of records in the table based on a specific database field.
