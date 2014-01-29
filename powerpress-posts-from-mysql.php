@@ -3,7 +3,7 @@
  * Plugin Name: PowerPress Posts From MySQL
  * Plugin URI:  http://plugins.markchouinard.me
  * Description: Create PowerPress posts from data stored in a MySQL table
- * Version:     0.9.9a
+Version:     0.9.9a
  * Author:      Mark Chouinard
  * Author URI:  http://markchouinard.me
  * License:     GPLv2+
