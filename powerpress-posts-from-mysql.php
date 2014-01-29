@@ -3,7 +3,7 @@
  * Plugin Name: PowerPress Posts From MySQL
  * Plugin URI:  http://plugins.markchouinard.me
  * Description: Create PowerPress posts from data stored in a MySQL table
- * Version:     0.9.9
+ * Version:     0.9.9a
  * Author:      Mark Chouinard
  * Author URI:  http://markchouinard.me
  * License:     GPLv2+
@@ -45,8 +45,8 @@ class ppfmPlugin{
 	protected $table;
 
 	public function __construct(){
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local_podcast.php';
-		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm_list_table.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class.local-podcast.php';
+		require_once plugin_dir_path(__FILE__) . 'includes/class.ppfm-list-table.php';
 		add_action ( 'admin_menu', array($this, 'ppfm_add_page') );
 		// add_action ( 'admin_enqueue_scripts', array($this, 'ppfm_plugin_enqueue_styles' ) );
 		add_action('admin_head', array($this, 'ppfm_admin_header'));
@@ -75,7 +75,6 @@ class ppfmPlugin{
 			'option'  => 'podcasts_per_page'
 			);
 		add_screen_option( $option, $args );
-		// $this->podcasts = LocalPodcast::get_podcasts();
 		$this->table = new PPFM_List_Table();
 
 	}
@@ -96,12 +95,6 @@ class ppfmPlugin{
 		// echo '.wp-list-table .column-url { width: 45%; }';
 		echo '</style>';
 	}
-
-	// function ppfm_plugin_enqueue_styles() {
-	// the latest incarnation of wp_register_style.  I'm done mucking about with this.
-	// 	wp_register_style( 'ppfm_wp_admin_css', plugins_url('assets/css/ppfm-style.css', __FILE__) );
- //        wp_enqueue_style( 'ppfm_wp_admin_css' );
-	// }
 
 	function ppfm_plugin_db_connect_page(){
 		$h2 = __('PowerPress Posts From MySQL Connection', 'ppfm');
@@ -188,11 +181,9 @@ class ppfmPlugin{
 		$count = LocalPodcast::count_podcasts();
 		$h2 = sprintf(_n('%d Available Podcast', '%d Available Podcasts', $count, 'ppfm'), $count);
 		?>
-		<!-- <div class="wrap"> -->
 		<div id="icon-users" class="icon32"><br /></div>
 		<h2><?php echo $h2; ?></h2>
 
-		<!-- SEARCH ATTEMPT 1 -->
 		<form method="post">
 			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
 			<?php $this->table->search_box('Search Podcasts', 'ppfm'); ?>
@@ -366,7 +357,6 @@ function ppfm_plugin_admin_init(){
 	register_setting(
 		'ppfm_db_options',
 		'ppfm_db_options'
-		// array( $this, 'ppfm_plugin_db_validate')
 		);
 	add_settings_section(
 		'ppfm_plugin_db',
@@ -434,10 +424,6 @@ function ppfm_plugin_db_validate($item){
 	$good = array();
 	foreach ( $item as $k=>$v){
 		// Check to see if MySQL ID field exists
-		// echo '<pre>';
-		// print_r( $item );
-		// echo '</pre>';
-		// die('ppfm 408');
 		if ( $k == 'primary_key' ){
 			if( FALSE === LocalPodcast::does_field_exist( $v )){
 				$v = '';
@@ -624,5 +610,5 @@ function ppfm_plugin_post_date_input(){
 
 }
 
-$iLoveMySon = new ppfmPlugin();
+new ppfmPlugin();
 

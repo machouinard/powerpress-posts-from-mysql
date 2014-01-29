@@ -4,7 +4,7 @@ Donate link: http://machouinard.com
 Tags: powerpress, podcasting, mysql
 Requires at least: 3.0
 Tested up to: 3.8.1
-Stable tag: 0.9.9
+Stable tag: 0.9.9a
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -114,5 +114,11 @@ v 0.9.1
 * Added ability to post from a range of records in the table based on a specific database field.
 * Added display of total records in table.
 
+== Upgrade Notice ==
 
+= 0.9.9a =
+Renamed files per standards. Cleaned up code, removed comments.
+
+= 0.9.9 =
+Improved image handling using media_handle_sideload
 
